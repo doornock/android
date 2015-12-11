@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import java.util.LinkedList;
 import java.util.List;
 
+import cz.sodae.doornock.model.DatabaseHelper;
 import cz.sodae.doornock.model.keys.Key;
 import cz.sodae.doornock.model.keys.KeyRing;
 
@@ -22,6 +23,8 @@ public class SiteManager
 
     public SiteManager(Context context) {
         this.db = new DatabaseHelper(context);
+        this.api = new SiteApi();
+        this.keyRing = new KeyRing(context);
     }
 
     public Site create(String url, String description)

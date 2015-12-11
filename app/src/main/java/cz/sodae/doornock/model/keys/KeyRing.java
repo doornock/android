@@ -10,6 +10,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.LinkedList;
 import java.util.List;
 
+import cz.sodae.doornock.model.DatabaseHelper;
 import cz.sodae.doornock.utils.security.keys.RSAEncryptUtil;
 
 public class KeyRing
@@ -31,7 +32,7 @@ public class KeyRing
 
     public Key getById(Long id)
     {
-        List<Key> result = select(db.COLUMN_ID + " = ?", new String[]{id.toString()}, null);
+        List<Key> result = select(db.COLUMN_KEYS_ID + " = ?", new String[]{id.toString()}, null);
         if (result.size() == 0) return null;
         return result.get(0);
     }
@@ -46,10 +47,10 @@ public class KeyRing
         List<Key> list = new LinkedList<>();
         try (SQLiteDatabase connection = db.getReadableDatabase()) {
             Cursor c = connection.query(db.TABLE_KEYS, new String[]{
-                    db.COLUMN_ID,
-                    db.COLUMN_TITLE,
-                    db.COLUMN_KEY_PRIVATE,
-                    db.COLUMN_KEY_PUBLIC
+                    db.COLUMN_KEYS_ID,
+                    db.COLUMN_KEYS_TITLE,
+                    db.COLUMN_KEYS_KEY_PRIVATE,
+                    db.COLUMN_KEYS_KEY_PUBLIC
             }, selection, selectionArgs, null, null, orderBy);
             c.moveToFirst();
             while (!c.isAfterLast()) {
@@ -76,12 +77,12 @@ public class KeyRing
         try (SQLiteDatabase connection = db.getWritableDatabase()) {
 
             ContentValues contentValues = new ContentValues();
-            contentValues.put(db.COLUMN_TITLE, key.getTitle());
-            contentValues.put(db.COLUMN_KEY_PRIVATE, RSAEncryptUtil.encodeBASE64(key.getPrivateKey().getEncoded()));
-            contentValues.put(db.COLUMN_KEY_PUBLIC, RSAEncryptUtil.encodeBASE64(key.getPublicKey().getEncoded()));
+            contentValues.put(db.COLUMN_KEYS_TITLE, key.getTitle());
+            contentValues.put(db.COLUMN_KEYS_KEY_PRIVATE, RSAEncryptUtil.encodeBASE64(key.getPrivateKey().getEncoded()));
+            contentValues.put(db.COLUMN_KEYS_KEY_PUBLIC, RSAEncryptUtil.encodeBASE64(key.getPublicKey().getEncoded()));
 
             if (key.getId() != null) {
-                connection.update(db.TABLE_KEYS, contentValues, db.COLUMN_ID + " = ?", new String[]{key.getId().toString()});
+                connection.update(db.TABLE_KEYS, contentValues, db.COLUMN_KEYS_ID + " = ?", new String[]{key.getId().toString()});
             } else {
                 long id = connection.insert(db.TABLE_KEYS, null, contentValues);
                 key.setId(id);
