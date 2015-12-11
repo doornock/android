@@ -2,17 +2,15 @@
     <string name="app_name">Doornock</string>
     <string name="service_apdu_description">Služba komunikující se čtečkou zámku</string>
     <string name="service_apdu_aid">F0394148148111</string>
+
     <string name="menu_activity_key_ring">Klíčenka</string>
+    <string name="menu_activity_add_site">Přidat síť</string>
 
 
     <string name="activity_key_ring_title">Klíčenka</string>
 
 
-
-
-
-
     <string name="activity_add_site_title">Přidat síť</string>
-    <string name="activity_add_site_">Přidat síť</string>
+    <string name="activity_add_site_">Registrovat</string>
 
 </resources>
