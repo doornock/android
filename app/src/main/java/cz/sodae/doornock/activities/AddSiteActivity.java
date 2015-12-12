@@ -47,32 +47,6 @@ public class AddSiteActivity extends AppCompatActivity {
         ((EditText) findViewById(R.id.login_username)).setEnabled(isChecked);
         ((EditText) findViewById(R.id.login_password)).setEnabled(isChecked);
 
-        /*
-        if (isChecked) {
-
-            login_frame.setVisibility(View.VISIBLE);
-            TranslateAnimation slide = new TranslateAnimation(0, 0, 100,0 );
-            slide.setDuration(1000);
-            slide.setFillAfter(true);
-            login_frame.startAnimation(slide);
-
-        } else {
-            Animation slide_down = AnimationUtils.loadAnimation(getApplicationContext(),
-                    R.anim.slidedown);
-
-            slide_down.setAnimationListener(new Animation.AnimationListener() {
-                public void onAnimationEnd(Animation animation) {
-                    login_frame.setVisibility(View.GONE);
-                }
-
-                public void onAnimationRepeat(Animation animation) {}
-
-                public void onAnimationStart(Animation animation) {}
-            });
-
-            login_frame.startAnimation(slide_down);
-        }
-        */
     }
 
 }
