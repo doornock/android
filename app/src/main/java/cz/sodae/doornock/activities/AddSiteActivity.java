@@ -8,6 +8,7 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.TranslateAnimation;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -42,11 +43,19 @@ public class AddSiteActivity extends AppCompatActivity {
     protected void onKnownLoginChecked(boolean isChecked)
     {
         final LinearLayout login_frame =  (LinearLayout) findViewById(R.id.login_frame);
+        login_frame.setVisibility( isChecked ? View.VISIBLE : View.GONE);
         ((EditText) findViewById(R.id.login_username)).setEnabled(isChecked);
         ((EditText) findViewById(R.id.login_password)).setEnabled(isChecked);
 
+        /*
         if (isChecked) {
+
             login_frame.setVisibility(View.VISIBLE);
+            TranslateAnimation slide = new TranslateAnimation(0, 0, 100,0 );
+            slide.setDuration(1000);
+            slide.setFillAfter(true);
+            login_frame.startAnimation(slide);
+
         } else {
             Animation slide_down = AnimationUtils.loadAnimation(getApplicationContext(),
                     R.anim.slidedown);
@@ -63,6 +72,7 @@ public class AddSiteActivity extends AppCompatActivity {
 
             login_frame.startAnimation(slide_down);
         }
+        */
     }
 
 }
