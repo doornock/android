@@ -15,6 +15,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public static final String TABLE_SITES = "sites";
     public static final String COLUMN_SITES_ID = "_id";
+    public static final String COLUMN_SITES_GUID = "guid";
     public static final String COLUMN_SITES_USERNAME = "username";
     public static final String COLUMN_SITES_PASSWORD = "password";
     public static final String COLUMN_SITES_TITLE = "title";
@@ -23,7 +24,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_SITES_KEY = "key_id";
 
     private static final String DATABASE_NAME = "db.db";
-    private static final int DATABASE_VERSION = 3; // todo: be aware, change will remove db!
+    private static final int DATABASE_VERSION = 2; // todo: be aware, change will remove db!
 
     // Database creation sql statement
     private static final String DATABASE_CREATE_KEYS =
@@ -38,12 +39,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_CREATE_SITES =
             "create table " + TABLE_SITES + "("
                     + COLUMN_SITES_ID + " integer primary key autoincrement, "
-                    + COLUMN_SITES_USERNAME + " varchar(255) not null, "
-                    + COLUMN_SITES_PASSWORD + " varchar(255) not null, "
-                    + COLUMN_SITES_TITLE + " varchar(255) not null, "
+                    + COLUMN_SITES_GUID + " varchar(255) null, "
+                    + COLUMN_SITES_USERNAME + " varchar(255) null, "
+                    + COLUMN_SITES_PASSWORD + " varchar(255) null, "
+                    + COLUMN_SITES_TITLE + " varchar(255) null, "
                     + COLUMN_SITES_API_URL + " text not null, "
-                    + COLUMN_SITES_API_KEY + " varchar(255) not null, "
-                    + COLUMN_SITES_KEY + " int not null"
+                    + COLUMN_SITES_API_KEY + " varchar(255) null, "
+                    + COLUMN_SITES_KEY + " int null"
                     + ");";
 
     public DatabaseHelper(Context context) {

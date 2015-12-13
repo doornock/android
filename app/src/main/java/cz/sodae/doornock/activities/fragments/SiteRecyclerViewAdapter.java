@@ -71,8 +71,8 @@ public class SiteRecyclerViewAdapter extends RecyclerView.Adapter<SiteRecyclerVi
         public void setSite(Site site)
         {
             mItem = site;
-            mContentView.setText(site.getDescription());
-            mIdView.setText(site.getUsername());
+            mContentView.setText(site.getTitle() != null ? site.getTitle() : "(bez popisku)");
+            mIdView.setText(site.getUrl());
         }
 
 

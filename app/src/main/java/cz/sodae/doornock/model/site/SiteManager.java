@@ -7,10 +7,13 @@ import android.database.sqlite.SQLiteDatabase;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import cz.sodae.doornock.model.DatabaseHelper;
 import cz.sodae.doornock.model.keys.Key;
 import cz.sodae.doornock.model.keys.KeyRing;
+import cz.sodae.doornock.utils.GuidPattern;
+import cz.sodae.doornock.utils.InvalidGUIDException;
 
 public class SiteManager
 {
@@ -27,25 +30,20 @@ public class SiteManager
         this.keyRing = new KeyRing(context);
     }
 
-    public Site create(String url, String description)
-    {
-        Site site = new Site(url);
-        site.setDescription(description);
-        return site;
+    public SiteKnockKnock create(String url) throws SiteApi.ApiException, InvalidGUIDException {
+        return api.knockKnock(url);
     }
 
-    public Site register(Site site)
-    {
+    public Site register(Site site) throws SiteApi.RegistrationFailedException {
         api.register(site);
         this.persist(site);
         return site;
     }
 
     // key is nullable, if key is null, will be generated!
-    public Site addDevice(Site site, String deviceDescription, Key key)
-    {
+    public Site addDevice(Site site, String deviceDescription, Key key) throws SiteApi.AddDeviceFailedException {
         if (key == null) {
-            key = Key.generateKey(site.getDescription());
+            key = Key.generateKey(site.getTitle());
         }
         api.addDevice(site, key, deviceDescription);
         this.persist(site);
@@ -53,12 +51,21 @@ public class SiteManager
     }
 
 
-    public Site updateDevice(Site site, Key key)
-    {
+    public Site updateDevice(Site site, Key key) {
         api.updateDevice(site, key);
         site.setKey(key);
         this.persist(site);
         return site;
+    }
+
+
+    public Site getByGuid(String guid) throws InvalidGUIDException
+    {
+        GuidPattern.validOrThrow(guid);
+        guid = guid.toUpperCase();
+        List<Site> result = select(db.COLUMN_SITES_GUID + " = ?", new String[]{guid}, null);
+        if (result.size() == 0) return null;
+        return result.get(0);
     }
 
 
@@ -67,8 +74,7 @@ public class SiteManager
         return select(null, null, null);
     }
 
-    private List<Site> select(String selection, String[] selectionArgs, String orderBy)
-    {
+    private List<Site> select(String selection, String[] selectionArgs, String orderBy) {
         List<Site> list = new LinkedList<>();
         try (SQLiteDatabase connection = db.getReadableDatabase()) {
             Cursor c = connection.query(db.TABLE_SITES, new String[]{
@@ -85,7 +91,7 @@ public class SiteManager
                 Site site = new Site(c.getString(1))
                         .setId(c.getLong(0));
                 if (!c.isNull(3))
-                    site.setDescription(c.getString(3));
+                    site.setTitle(c.getString(3));
 
                 if (!c.isNull(2))
                     site.setApiKey(c.getString(2));
@@ -97,6 +103,7 @@ public class SiteManager
                     site.setCredentials(c.getString(5), c.getString(6));
 
                 list.add(site);
+                c.moveToNext();
             }
         }
         return list;
@@ -111,7 +118,8 @@ public class SiteManager
             }
 
             ContentValues contentValues = new ContentValues();
-            contentValues.put(db.COLUMN_SITES_TITLE, site.getDescription());
+            contentValues.put(db.COLUMN_SITES_GUID, site.getGuid());
+            contentValues.put(db.COLUMN_SITES_TITLE, site.getTitle());
             contentValues.put(db.COLUMN_SITES_API_URL, site.getUrl());
             contentValues.put(db.COLUMN_SITES_API_KEY, site.getApiKey());
             contentValues.put(db.COLUMN_SITES_KEY, site.getKey() != null ? site.getKey().getId() : null);
@@ -128,5 +136,6 @@ public class SiteManager
 
         return site;
     }
+
 
 }

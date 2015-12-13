@@ -33,11 +33,10 @@
                 android:hint="https://example.com"
                 android:layout_weight="1" />
 
-            <Button
+            <ImageButton
                 style="?android:attr/buttonStyleSmall"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="QR"
                 android:id="@+id/btn_scan_qr"
                 android:layout_weight="6" />
         </LinearLayout>
@@ -70,13 +69,86 @@
                 android:inputType="textPassword"
                 android:id="@+id/login_password"
                 android:hint="Heslo" />
+
         </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Popisek zařízení"
+            android:id="@+id/textView" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/description"
+            android:hint="Popisek zařízení" />
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Přidat zařízení"
             android:id="@+id/btn_start" />
+
+
+
+        <LinearLayout
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            android:id="@+id/loaded_site_frame"
+            >
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                card_view:cardCornerRadius="2dp"
+                card_view:contentPadding="10dp"
+                android:foreground="?android:attr/selectableItemBackground"
+                >
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    >
+                    <TextView
+                        style="@style/Base.TextAppearance.AppCompat.Headline"
+                        android:id="@+id/loaded_site_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="4dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="4dp"
+                        android:gravity="center_vertical"
+                        android:maxLines="1"
+                        android:textSize="20sp"
+                        android:text="{title}"
+                        android:textAppearance="?attr/textAppearanceListItem" />
+
+                    <TextView
+                        style="@style/Base.TextAppearance.AppCompat.Body1"
+                        android:text="{guid}"
+                        android:id="@+id/loaded_site_guid"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="4dp"
+                        android:maxLines="20"
+                        android:textSize="14sp"
+                        android:textAppearance="?attr/textAppearanceListItem" />
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+        </LinearLayout>
+
 
     </LinearLayout>
 

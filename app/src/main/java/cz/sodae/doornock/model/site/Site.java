@@ -1,22 +1,23 @@
 package cz.sodae.doornock.model.site;
 
 import cz.sodae.doornock.model.keys.Key;
+import cz.sodae.doornock.utils.GuidPattern;
+import cz.sodae.doornock.utils.InvalidGUIDException;
 
 public class Site
 {
     private Long id;
+    private String guid;
 
     private String url;
-    private String description;
+    private String title;
 
     private String username;
     private String password;
 
     private String apiKey;
 
-
     private Key key;
-
 
     public Site(String url) {
         this.url = url;
@@ -27,6 +28,10 @@ public class Site
         return id;
     }
 
+    public String getGuid() {
+        return guid;
+    }
+
     public Key getKey() {
         return key;
     }
@@ -35,8 +40,8 @@ public class Site
         return url;
     }
 
-    public String getDescription() {
-        return description;
+    public String getTitle() {
+        return title;
     }
 
     public String getUsername() {
@@ -51,8 +56,21 @@ public class Site
         return apiKey;
     }
 
+
+    public boolean isDeviceRegistred()
+    {
+        return apiKey != null;
+    }
+
+
     public Site setId(Long id) {
         this.id = id;
+        return this;
+    }
+
+    public Site setGuid(String guid) throws InvalidGUIDException {
+        GuidPattern.validOrThrow(guid);
+        this.guid = guid.toUpperCase();
         return this;
     }
 
@@ -60,8 +78,8 @@ public class Site
         this.key = key;
     }
 
-    public Site setDescription(String description) {
-        this.description = description;
+    public Site setTitle(String title) {
+        this.title = title;
         return this;
     }
 

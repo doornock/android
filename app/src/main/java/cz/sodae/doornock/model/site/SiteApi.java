@@ -13,13 +13,38 @@ import org.json.JSONObject;
 import java.io.IOException;
 
 import cz.sodae.doornock.model.keys.Key;
+import cz.sodae.doornock.utils.InvalidGUIDException;
 import cz.sodae.doornock.utils.security.keys.RSAEncryptUtil;
 
-class SiteApi
+public class SiteApi
 {
     private OkHttpClient client = new OkHttpClient();
 
-    public void register(Site site)
+
+    public SiteKnockKnock knockKnock(String url) throws ApiException, InvalidGUIDException
+    {
+        try {
+            Request request = new Request.Builder()
+                    .url(url + "/knock-knock")
+                    .build();
+
+            String result = client.newCall(request).execute().body().string();
+            JSONObject json = new JSONObject(result);
+
+            if (!json.getString("status").equals("OK")) {
+                throw new ApiException("NOT OK");
+            }
+
+            JSONObject data = json.getJSONObject("data").getJSONObject("site");
+            SiteKnockKnock site = new SiteKnockKnock(data.getString("guid"), data.getString("title"));
+            return site;
+        } catch (JSONException | IOException e) {
+            throw new ApiException(e);
+        }
+    }
+
+
+    public void register(Site site) throws RegistrationFailedException
     {
         try {
             Request request = new Request.Builder()
@@ -29,8 +54,8 @@ class SiteApi
             String result = client.newCall(request).execute().body().string();
             JSONObject json = new JSONObject(result);
 
-            if (!json.getString("state").equals("OK")) {
-                throw new IOException("NOT OK");
+            if (!json.getString("status").equals("OK")) {
+                throw new ApiException("NOT OK");
             }
 
             JSONObject data = json.getJSONObject("data");
@@ -39,11 +64,11 @@ class SiteApi
                     data.getString("password")
             );
         } catch (JSONException | IOException e) {
-            e.printStackTrace();
+            throw new RegistrationFailedException(e);
         }
     }
 
-    public void addDevice(Site site, Key key, String description)
+    public void addDevice(Site site, Key key, String description) throws AddDeviceFailedException
     {
         try {
             RequestBody rb = new MultipartBuilder()
@@ -59,8 +84,8 @@ class SiteApi
             String result = client.newCall(request).execute().body().string();
             JSONObject json = new JSONObject(result);
 
-            if (!json.getString("state").equals("OK")) {
-                throw new IOException("NOT OK");
+            if (!json.getString("status").equals("OK")) {
+                throw new ApiException("NOT OK");
             }
 
             JSONObject data = json.getJSONObject("data");
@@ -68,7 +93,7 @@ class SiteApi
                     data.getString("api_key")
             );
         } catch (JSONException | IOException e) {
-            e.printStackTrace();
+            throw new AddDeviceFailedException(e);
         }
     }
 
@@ -96,5 +121,61 @@ class SiteApi
             e.printStackTrace();
         }
     }
+
+    public class ApiException extends IOException
+    {
+        public ApiException() {
+        }
+
+        public ApiException(String detailMessage) {
+            super(detailMessage);
+        }
+
+        public ApiException(String message, Throwable cause) {
+            super(message, cause);
+        }
+
+        public ApiException(Throwable cause) {
+            super(cause);
+        }
+    }
+
+
+    public class RegistrationFailedException extends Exception
+    {
+        public RegistrationFailedException() {
+        }
+
+        public RegistrationFailedException(String detailMessage) {
+            super(detailMessage);
+        }
+
+        public RegistrationFailedException(String detailMessage, Throwable throwable) {
+            super(detailMessage, throwable);
+        }
+
+        public RegistrationFailedException(Throwable throwable) {
+            super(throwable);
+        }
+    }
+
+    public class AddDeviceFailedException extends Exception
+    {
+        public AddDeviceFailedException() {
+        }
+
+        public AddDeviceFailedException(String detailMessage) {
+            super(detailMessage);
+        }
+
+        public AddDeviceFailedException(String detailMessage, Throwable throwable) {
+            super(detailMessage, throwable);
+        }
+
+        public AddDeviceFailedException(Throwable throwable) {
+            super(throwable);
+        }
+    }
+
 
 }
