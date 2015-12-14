@@ -11,9 +11,15 @@ import java.io.DataInputStream;
 import java.io.InputStream;
 
 import cz.sodae.doornock.R;
+import cz.sodae.doornock.model.site.Site;
+import cz.sodae.doornock.model.site.SiteManager;
 import cz.sodae.doornock.utils.Bytes;
+import cz.sodae.doornock.utils.InvalidGUIDException;
 import cz.sodae.doornock.utils.commands.BasicCommand;
 import cz.sodae.doornock.utils.FileLoader;
+import cz.sodae.doornock.utils.commands.HelloCommand;
+import cz.sodae.doornock.utils.commands.SignCommand;
+import cz.sodae.doornock.utils.security.keys.SignerAndVerifier;
 
 public class ApduService extends HostApduService
 {
@@ -41,12 +47,15 @@ public class ApduService extends HostApduService
         return 0;
     }
 
+    Site site;
 
     @Override
     public byte[] processCommandApdu(byte[] commandApdu, Bundle extras) {
         Log.i(TAG, String.format("Request: %s", Bytes.bytesToHex(commandApdu)));
 
         BasicCommand bc = null;
+
+        SiteManager s = new SiteManager(this);
 
         try {
             bc = new BasicCommand(commandApdu);
@@ -60,6 +69,43 @@ public class ApduService extends HostApduService
             return A_OKAY;
         }
 
+        if (HelloCommand.isThisCommnad(commandApdu)) {
+            Log.i(TAG, "HELLO!");
+            try {
+                String guid = new String(bc.getData());
+                Log.i(TAG, "GUID!" + guid);
+                site = s.getByGuid(guid);
+                Log.i(TAG, "FOUND!" + site.getDeviceId());
+                return Bytes.concatenate(site.getDeviceId().getBytes(), A_OKAY);
+            } catch (InvalidGUIDException e) {
+                return A_ERROR_INVALID_AUTH;
+            }
+        }
+
+
+        if (SignCommand.isThisCommnad(commandApdu)) {
+            Log.i(TAG, "YOU WANT SIGN?");
+            try {
+                byte[] data = bc.getData();
+
+                if (site != null && site.getKey() != null) {
+                    byte[] signed = SignerAndVerifier.sign(data, site.getKey().getPrivateKey());
+                    Log.i(TAG, "SIGNING!" + site.getDeviceId());
+                    return Bytes.concatenate(signed, A_OKAY);
+                } else {
+                    throw new Exception("SITE IS NOT WELL");
+                }
+
+            } catch (InvalidGUIDException e) {
+                e.printStackTrace();
+                return A_ERROR_INVALID_AUTH;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return A_ERROR_INVALID_AUTH;
+            }
+        }
+
+
         return sign(bc);
 
 
@@ -69,6 +115,7 @@ public class ApduService extends HostApduService
     @Override
     public void onDeactivated(int reason) {
         Log.i(TAG, String.format("Deactive %d", reason));
+        site = null;
     }
 
 
@@ -104,6 +151,7 @@ public class ApduService extends HostApduService
             (byte) 0x08
         };
         */
+
 
         try {
             AssetFileDescriptor f = getAssets().openFd("private_key.der");
