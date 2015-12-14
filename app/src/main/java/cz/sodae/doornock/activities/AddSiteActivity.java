@@ -222,7 +222,12 @@ public class AddSiteActivity extends AppCompatActivity {
                 SiteKnockKnock knock = siteManager.create(site.getUrl());
                 site.setTitle(knock.getTitle());
                 site.setGuid(knock.getGuid());
-                AddSiteActivity.this.setKnock(knock);
+
+                Site found = siteManager.getByGuid(knock.getGuid());
+                if (found != null) {
+                    return result.alreadyAdded("Tato sít je již v seznamu sítí", knock);
+                }
+
             } catch (SiteApi.ApiException e) {
                 return result.setException("Nelze se dovolat Sítě", e);
             } catch (InvalidGUIDException e) {
@@ -263,6 +268,9 @@ public class AddSiteActivity extends AppCompatActivity {
                 result.exception.printStackTrace();
             }
 
+
+            AddSiteActivity.this.setKnock(result.siteKnockKnock);
+
             know_login.setChecked(true);
             //know_login.setEnabled(false);
             //login_username.setEnabled(false);
@@ -271,7 +279,7 @@ public class AddSiteActivity extends AppCompatActivity {
             login_password.setText(result.site.getPassword());
 
             AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(AddSiteActivity.this);
-            dlgAlert.setMessage(result.message != null ? result.message : "");
+            dlgAlert.setMessage(result.message != null ? result.message : "(?)");
             dlgAlert.setTitle("Registrace zařízení se nezdařila");
             dlgAlert.setPositiveButton("Rozumím", null);
             dlgAlert.setCancelable(true);
@@ -291,6 +299,16 @@ public class AddSiteActivity extends AppCompatActivity {
         public boolean ok;
         public String message;
         public Exception exception;
+
+        public SiteKnockKnock siteKnockKnock;
+
+        public AddDeviceResult alreadyAdded(String message, SiteKnockKnock knockKnock)
+        {
+            this.message = message;
+            this.siteKnockKnock = knockKnock;
+            this.ok = false;
+            return this;
+        }
 
         public AddDeviceResult setException(String message, Exception exception) {
             this.ok = false;
