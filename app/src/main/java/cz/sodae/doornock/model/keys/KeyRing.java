@@ -62,6 +62,7 @@ public class KeyRing
                             c.getString(1)
                         ).setId(c.getLong(0))
                     );
+                    c.moveToNext();
                 } catch (InvalidKeySpecException e) {
                     e.printStackTrace();
                 } catch (IOException e) {

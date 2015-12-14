@@ -71,9 +71,11 @@ public class SiteApi
     public void addDevice(Site site, Key key, String description) throws AddDeviceFailedException
     {
         try {
+            String encodedKey = RSAEncryptUtil.encodeBASE64(key.getPublicKey().getEncoded());
             RequestBody rb = new MultipartBuilder()
+                    .type(MultipartBuilder.FORM)
                     .addFormDataPart("description", description)
-                    .addFormDataPart("public_key", RSAEncryptUtil.encodeBASE64(key.getPublicKey().getEncoded()))
+                    .addFormDataPart("public_key", encodedKey)
                     .build();
 
             Request request = new Request.Builder()
@@ -89,6 +91,9 @@ public class SiteApi
             }
 
             JSONObject data = json.getJSONObject("data");
+            site.setDeviceId(
+                    data.getString("device_id")
+            );
             site.setApiKey(
                     data.getString("api_key")
             );
@@ -101,7 +106,9 @@ public class SiteApi
     public void updateDevice(Site site, Key key)
     {
         try {
+
             RequestBody rb = new MultipartBuilder()
+                    .type(MultipartBuilder.FORM)
                     .addFormDataPart("public_key", RSAEncryptUtil.encodeBASE64(key.getPublicKey().getEncoded()))
                     .build();
 

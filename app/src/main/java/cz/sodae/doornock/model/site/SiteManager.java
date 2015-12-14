@@ -46,6 +46,7 @@ public class SiteManager
             key = Key.generateKey(site.getTitle());
         }
         api.addDevice(site, key, deviceDescription);
+        site.setKey(key);
         this.persist(site);
         return site;
     }
@@ -84,7 +85,8 @@ public class SiteManager
                     db.COLUMN_SITES_TITLE,
                     db.COLUMN_SITES_KEY,
                     db.COLUMN_SITES_USERNAME,
-                    db.COLUMN_SITES_PASSWORD
+                    db.COLUMN_SITES_PASSWORD,
+                    db.COLUMN_SITES_DEVICE_ID
             }, selection, selectionArgs, null, null, orderBy);
             c.moveToFirst();
             while (!c.isAfterLast()) {
@@ -101,6 +103,9 @@ public class SiteManager
 
                 if (!(c.isNull(5) || c.isNull(6)))
                     site.setCredentials(c.getString(5), c.getString(6));
+
+                if (!(c.isNull(7)))
+                    site.setDeviceId(c.getString(7));
 
                 list.add(site);
                 c.moveToNext();
@@ -122,6 +127,7 @@ public class SiteManager
             contentValues.put(db.COLUMN_SITES_TITLE, site.getTitle());
             contentValues.put(db.COLUMN_SITES_API_URL, site.getUrl());
             contentValues.put(db.COLUMN_SITES_API_KEY, site.getApiKey());
+            contentValues.put(db.COLUMN_SITES_DEVICE_ID, site.getDeviceId());
             contentValues.put(db.COLUMN_SITES_KEY, site.getKey() != null ? site.getKey().getId() : null);
             contentValues.put(db.COLUMN_SITES_USERNAME, site.getUsername());
             contentValues.put(db.COLUMN_SITES_PASSWORD, site.getPassword());

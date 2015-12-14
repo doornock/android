@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -73,6 +74,11 @@ public class AddSiteActivity extends AppCompatActivity {
             }
         });
         onKnownLoginChecked(know_login.isChecked());
+
+        if (description_text.getText().toString().equals("")) {
+            description_text.setText(Build.MODEL);
+        }
+
 
         btn_scan_qr.setImageDrawable(new IconicsDrawable(this, CommunityMaterial.Icon.cmd_qrcode).color(Color.BLACK).actionBar());
         btn_scan_qr.setOnClickListener(new View.OnClickListener() {

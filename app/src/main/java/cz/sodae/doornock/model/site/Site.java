@@ -15,6 +15,7 @@ public class Site
     private String username;
     private String password;
 
+    private String deviceId;
     private String apiKey;
 
     private Key key;
@@ -56,6 +57,9 @@ public class Site
         return apiKey;
     }
 
+    public String getDeviceId() {
+        return deviceId;
+    }
 
     public boolean isDeviceRegistred()
     {
@@ -86,6 +90,11 @@ public class Site
     public Site setCredentials(String username, String password) {
         this.username = username;
         this.password = password;
+        return this;
+    }
+
+    public Site setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
         return this;
     }
 

@@ -19,12 +19,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_SITES_USERNAME = "username";
     public static final String COLUMN_SITES_PASSWORD = "password";
     public static final String COLUMN_SITES_TITLE = "title";
+    public static final String COLUMN_SITES_DEVICE_ID = "device_id";
     public static final String COLUMN_SITES_API_URL = "api_url";
     public static final String COLUMN_SITES_API_KEY = "api_key";
     public static final String COLUMN_SITES_KEY = "key_id";
 
     private static final String DATABASE_NAME = "db.db";
-    private static final int DATABASE_VERSION = 2; // todo: be aware, change will remove db!
+    private static final int DATABASE_VERSION = 3; // todo: be aware, change will remove db!
 
     // Database creation sql statement
     private static final String DATABASE_CREATE_KEYS =
@@ -45,6 +46,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     + COLUMN_SITES_TITLE + " varchar(255) null, "
                     + COLUMN_SITES_API_URL + " text not null, "
                     + COLUMN_SITES_API_KEY + " varchar(255) null, "
+                    + COLUMN_SITES_DEVICE_ID + " varchar(255) null, "
                     + COLUMN_SITES_KEY + " int null"
                     + ");";
 
