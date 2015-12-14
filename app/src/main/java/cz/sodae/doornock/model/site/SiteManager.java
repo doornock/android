@@ -86,7 +86,8 @@ public class SiteManager
                     db.COLUMN_SITES_KEY,
                     db.COLUMN_SITES_USERNAME,
                     db.COLUMN_SITES_PASSWORD,
-                    db.COLUMN_SITES_DEVICE_ID
+                    db.COLUMN_SITES_DEVICE_ID,
+                    db.COLUMN_SITES_GUID
             }, selection, selectionArgs, null, null, orderBy);
             c.moveToFirst();
             while (!c.isAfterLast()) {
@@ -106,6 +107,13 @@ public class SiteManager
 
                 if (!(c.isNull(7)))
                     site.setDeviceId(c.getString(7));
+
+                if (!c.isNull(8))
+                    try {
+                        site.setGuid(c.getString(8));
+                    } catch (InvalidGUIDException e) {
+                        e.printStackTrace();
+                    }
 
                 list.add(site);
                 c.moveToNext();

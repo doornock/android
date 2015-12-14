@@ -25,7 +25,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_SITES_KEY = "key_id";
 
     private static final String DATABASE_NAME = "db.db";
-    private static final int DATABASE_VERSION = 3; // todo: be aware, change will remove db!
+    private static final int DATABASE_VERSION = 4; // todo: be aware, change will remove db!
 
     // Database creation sql statement
     private static final String DATABASE_CREATE_KEYS =
@@ -50,6 +50,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     + COLUMN_SITES_KEY + " int null"
                     + ");";
 
+    private static final String DATABASE_CREATE_INDEX_SITES =
+            "CREATE UNIQUE INDEX unique_guid " +
+                    "ON " + TABLE_SITES + " (" + COLUMN_SITES_GUID + ");";
+
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -58,6 +62,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase database) {
         database.execSQL(DATABASE_CREATE_KEYS);
         database.execSQL(DATABASE_CREATE_SITES);
+        database.execSQL(DATABASE_CREATE_INDEX_SITES);
     }
 
     @Override
