@@ -4,7 +4,7 @@ import java.security.*;
 
 public class SignerAndVerifier
 {
-    static final String ALGORITHM = "SHA256withDSA"; // SHA1WithRSA
+    static final String ALGORITHM = "SHA256withRSA"; // SHA1WithRSA
 
     public static byte[] sign(byte[] data, PrivateKey key) throws Exception {
         Signature signer = Signature.getInstance(ALGORITHM);
