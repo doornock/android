@@ -1,9 +1,12 @@
 package cz.sodae.doornock.services;
 
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.nfc.cardemulation.HostApduService;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -25,6 +28,8 @@ public class ApduService extends HostApduService
 {
 
     private static final String TAG = "Doornock/APDU";
+    private static final int NOTIFICATION_ID = 0;
+    private NotificationManager nm;
 
     private static final byte[] A_OKAY = {
             (byte)0x90,  // SW1	Status byte 1 - Command processing status
@@ -66,15 +71,26 @@ public class ApduService extends HostApduService
 
         if (Bytes.isEqual(ApduSelectByteCommand(), commandApdu)) {
             Log.i(TAG, "Hello!");
+
             return A_OKAY;
         }
 
         if (HelloCommand.isThisCommnad(commandApdu)) {
             Log.i(TAG, "HELLO!");
+
+            nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setContentTitle("Doorlock")
+                    .setContentText("Trying unlocking...");
+
+            nm.notify(NOTIFICATION_ID, mBuilder.build());
+
             try {
                 String guid = new String(bc.getData());
                 Log.i(TAG, "GUID!" + guid);
                 site = s.getByGuid(guid);
+                if (site == null) return A_ERROR_INVALID_AUTH;
                 Log.i(TAG, "FOUND!" + site.getDeviceId());
                 return Bytes.concatenate(site.getDeviceId().getBytes(), A_OKAY);
             } catch (InvalidGUIDException e) {
@@ -91,8 +107,30 @@ public class ApduService extends HostApduService
                 if (site != null && site.getKey() != null) {
                     byte[] signed = SignerAndVerifier.sign(data, site.getKey().getPrivateKey());
                     Log.i(TAG, "SIGNING!" + site.getDeviceId());
+
+
+                    nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                    NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
+                            .setSmallIcon(R.mipmap.ic_launcher)
+                            .setContentTitle("Doorlock")
+                            .setContentText("Unlocking in site " + site.getTitle());
+
+                    nm.notify(NOTIFICATION_ID, mBuilder.build());
+
+
                     return Bytes.concatenate(signed, A_OKAY);
+
                 } else {
+
+                    nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                    NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
+                            .setSmallIcon(R.mipmap.ic_launcher)
+                            .setContentTitle("Doorlock")
+                            .setContentText("Site not found");
+
+                    nm.notify(NOTIFICATION_ID, mBuilder.build());
+
+
                     throw new Exception("SITE IS NOT WELL");
                 }
 
@@ -115,6 +153,13 @@ public class ApduService extends HostApduService
     @Override
     public void onDeactivated(int reason) {
         Log.i(TAG, String.format("Deactive %d", reason));
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+
+        }
+        nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        nm.cancel(NOTIFICATION_ID);
         site = null;
     }
 
