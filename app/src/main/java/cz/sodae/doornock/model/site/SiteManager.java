@@ -52,7 +52,7 @@ public class SiteManager
     }
 
 
-    public Site updateDevice(Site site, Key key) {
+    public Site updateDevice(Site site, Key key) throws SiteApi.ApiException {
         api.updateDevice(site, key);
         site.setKey(key);
         this.persist(site);
@@ -68,6 +68,18 @@ public class SiteManager
         if (result.size() == 0) return null;
         return result.get(0);
     }
+
+
+    public boolean remove(Site site)
+    {
+        try (SQLiteDatabase connection = db.getWritableDatabase()) {
+            if (site.getId() != 0) {
+                connection.delete(db.TABLE_SITES, db.COLUMN_KEYS_ID + " = ?", new String[]{site.getId().toString()});
+            }
+        }
+        return false;
+    }
+
 
 
     public List<Site> findAll()
