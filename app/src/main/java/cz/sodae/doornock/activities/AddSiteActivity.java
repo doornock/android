@@ -268,6 +268,7 @@ public class AddSiteActivity extends AppCompatActivity {
                 Intent i = new Intent(AddSiteActivity.this, MainActivity.class);
                 finish();
                 startActivity(i);
+                return;
             }
 
             if (result.exception != null) {
