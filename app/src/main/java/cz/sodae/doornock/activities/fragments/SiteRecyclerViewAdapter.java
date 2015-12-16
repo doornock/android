@@ -15,15 +15,13 @@ import java.util.List;
 
 public class SiteRecyclerViewAdapter extends RecyclerView.Adapter<SiteRecyclerViewAdapter.ViewHolder> {
 
-    private final SiteManager manager;
     private final SiteListFragment.OnListFragmentInteractionListener mListener;
 
     private List<Site> sites;
 
-    public SiteRecyclerViewAdapter(SiteManager manager, SiteListFragment.OnListFragmentInteractionListener listener) {
-        this.manager = manager;
+    public SiteRecyclerViewAdapter(List<Site> sites, SiteListFragment.OnListFragmentInteractionListener listener) {
         mListener = listener;
-        this.sites = manager.findAll();
+        this.sites = sites;
     }
 
 
@@ -71,8 +69,8 @@ public class SiteRecyclerViewAdapter extends RecyclerView.Adapter<SiteRecyclerVi
         public void setSite(Site site)
         {
             mItem = site;
-            mContentView.setText(site.getTitle() != null ? site.getTitle() : "(bez popisku)");
-            mIdView.setText(site.getUrl());
+            mIdView.setText(site.getTitle() != null ? site.getTitle() : "(Neznámá)");
+            mContentView.setText("Adresa sítě: " + site.getUrl());
         }
 
 

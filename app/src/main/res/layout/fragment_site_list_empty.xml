@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="60dp"
+    >
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Vítejte v Doornock!"
+            android:gravity="center_vertical|center|center_horizontal"
+            android:id="@+id/no_sites"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Přidejte si novou síť"
+            android:id="@+id/textView"
+            android:layout_gravity="center_horizontal|top"
+            android:layout_above="@+id/frameLayout"
+            android:layout_centerHorizontal="true" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:gravity="center_vertical|center|center_horizontal"
+            android:layout_alignParentStart="true"
+            android:id="@+id/frameLayout">
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fab"
+                android:layout_width="wrap_content"
+                android:src="@android:drawable/ic_menu_add"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical|center|center_horizontal"
+                android:layout_margin="@dimen/fab_margin"
+                android:layout_gravity="center" />
+
+        </FrameLayout>
+    </LinearLayout>
+
+
+</RelativeLayout>
