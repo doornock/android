@@ -15,4 +15,11 @@
     <string name="activity_detail_site_remove_site">Ostranit síť</string>
 
 
+    <string name="activity_add_site_site_url">URL adresa sítě (http://&#8230;)</string>
+    <string name="activity_add_site_know_login">Jsem již zaregistrovaný, přihlasit</string>
+    <string name="activity_add_site_device_description">Popisek zařízení</string>
+    <string name="activity_add_site_login">Přihlašovací jméno</string>
+    <string name="activity_add_site_password">Heslo</string>
+    <string name="activity_add_site_add_device">Přidat zařízení</string>
+
 </resources>

@@ -1,176 +1,214 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:animateLayoutChanges="true"
-    >
+    android:fitsSystemWindows="true"
+    tools:context="cz.sodae.doornock.activities.AddSiteActivity">
 
-    <include layout="@layout/toolbar"/>
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/app_bar_height"
+        android:fitsSystemWindows="true"
+        android:theme="@style/AppTheme.AppBarOverlay">
 
-    <LinearLayout
-        android:layout_marginTop="?attr/actionBarSize"
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/toolbar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true"
+            app:contentScrim="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_collapseMode="pin"
+                app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/btn_scan_qr"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/fab_margin"
+        app:layout_anchor="@id/app_bar"
+        app:layout_anchorGravity="bottom|end" />
+
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-
-        android:gravity="center_horizontal"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         >
-
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            android:orientation="vertical"
 
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                >
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_vertical_margin"
+            >
 
-                <EditText
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <android.support.design.widget.TextInputLayout
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/site_url"
-                    android:hint="URL adresa sítě (http://...)"
-                     />
-            </android.support.design.widget.TextInputLayout>
-            <ImageButton
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/btn_scan_qr"
-                android:layout_weight="6" />
-        </LinearLayout>
-
-
-
-        <CheckBox
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Mám existující účet"
-            android:id="@+id/know_login"
-            android:checked="false" />
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:id="@+id/login_frame"
-            >
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/login_username"
-                    android:hint="Jméno"
-                    android:enabled="false" />
-            </android.support.design.widget.TextInputLayout>
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="textPassword"
-                    android:id="@+id/login_password"
-                    android:hint="Heslo" />
-            </android.support.design.widget.TextInputLayout>
-
-        </LinearLayout>
-
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/description"
-                android:hint="Popisek zařízení" />
-
-        </android.support.design.widget.TextInputLayout>
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="?android:textAppearanceSmall"
-            android:textStyle="bold"
-            android:layout_marginTop="16dp"
-            android:text="Přidat zařízení"
-            android:id="@+id/btn_start" />
-
-
-
-        <LinearLayout
-            xmlns:card_view="http://schemas.android.com/apk/res-auto"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:visibility="gone"
-            android:id="@+id/loaded_site_frame"
-            >
-
-            <android.support.v7.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                card_view:cardCornerRadius="2dp"
-                card_view:contentPadding="10dp"
-                android:foreground="?android:attr/selectableItemBackground"
-                >
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
+                    android:layout_weight="1"
                     >
-                    <TextView
-                        style="@style/Base.TextAppearance.AppCompat.Headline"
-                        android:id="@+id/loaded_site_title"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="4dp"
-                        android:layout_marginEnd="10dp"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginTop="4dp"
-                        android:gravity="center_vertical"
-                        android:maxLines="1"
-                        android:textSize="20sp"
-                        android:text="{title}"
-                        android:textAppearance="?attr/textAppearanceListItem" />
 
-                    <TextView
-                        style="@style/Base.TextAppearance.AppCompat.Body1"
-                        android:text="{guid}"
-                        android:id="@+id/loaded_site_guid"
+                    <EditText
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/site_url"
+                        android:hint="@string/activity_add_site_site_url"
+                        android:singleLine="true"
+                        android:lines="1"
+                        />
+                </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/description"
+                    android:hint="@string/activity_add_site_device_description" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/activity_add_site_know_login"
+                android:id="@+id/know_login"
+                android:checked="false" />
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:id="@+id/login_frame"
+                >
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginEnd="8dp"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="8dp"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginTop="4dp"
-                        android:maxLines="20"
-                        android:textSize="14sp"
-                        android:textAppearance="?attr/textAppearanceListItem" />
-                </LinearLayout>
-            </android.support.v7.widget.CardView>
+                        android:id="@+id/login_username"
+                        android:hint="@string/activity_add_site_login"
+                        android:enabled="false"
+                        android:singleLine="true"
+                        android:lines="1"
+                        />
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPassword"
+                        android:id="@+id/login_password"
+                        android:hint="@string/activity_add_site_password"
+                        android:singleLine="true"
+                        android:lines="1"
+                        />
+                </android.support.design.widget.TextInputLayout>
+
+            </LinearLayout>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="?android:textAppearanceSmall"
+                android:textStyle="bold"
+                android:layout_marginTop="16dp"
+                android:text="@string/activity_add_site_add_device"
+                android:id="@+id/btn_start" />
+
+
+
+            <LinearLayout
+                xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                android:id="@+id/loaded_site_frame"
+                >
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    card_view:cardCornerRadius="2dp"
+                    card_view:contentPadding="10dp"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    >
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        >
+                        <TextView
+                            style="@style/Base.TextAppearance.AppCompat.Headline"
+                            android:id="@+id/loaded_site_title"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="4dp"
+                            android:layout_marginEnd="10dp"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginTop="4dp"
+                            android:gravity="center_vertical"
+                            android:maxLines="1"
+                            android:textSize="20sp"
+                            android:text="{title}"
+                            android:textAppearance="?attr/textAppearanceListItem" />
+
+                        <TextView
+                            style="@style/Base.TextAppearance.AppCompat.Body1"
+                            android:text="{guid}"
+                            android:id="@+id/loaded_site_guid"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="8dp"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginTop="4dp"
+                            android:maxLines="20"
+                            android:textSize="14sp"
+                            android:textAppearance="?attr/textAppearanceListItem" />
+                    </LinearLayout>
+                </android.support.v7.widget.CardView>
+
+            </LinearLayout>
+
 
         </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
 
 
-    </LinearLayout>
-
-</RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>
