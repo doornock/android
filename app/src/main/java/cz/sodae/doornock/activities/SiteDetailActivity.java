@@ -60,10 +60,12 @@ public class SiteDetailActivity extends AppCompatActivity {
             if (site == null) {
                 Log.i(LOG_TAG, "Site " + guid + " not found");
                 finish();
+                return;
             }
         } catch (InvalidGUIDException e) {
             Log.w(LOG_TAG, "Invalid GUID");
             finish();
+            return;
         }
 
         setTitle(site.getTitle());
