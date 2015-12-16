@@ -18,10 +18,20 @@ public class SiteRecyclerViewAdapter extends RecyclerView.Adapter<SiteRecyclerVi
     private final SiteListFragment.OnListFragmentInteractionListener mListener;
 
     private List<Site> sites;
+    private SiteManager siteManager;
 
-    public SiteRecyclerViewAdapter(List<Site> sites, SiteListFragment.OnListFragmentInteractionListener listener) {
+    public SiteRecyclerViewAdapter(SiteManager siteManager, SiteListFragment.OnListFragmentInteractionListener listener) {
         mListener = listener;
-        this.sites = sites;
+        this.siteManager = siteManager;
+        refresh();
+
+    }
+
+
+    public void refresh()
+    {
+        sites = siteManager.findAll();
+        notifyDataSetChanged();
     }
 
 

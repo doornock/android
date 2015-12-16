@@ -1,13 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
 
-<android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-xmlns:tools="http://schemas.android.com/tools"
-android:id="@+id/list"
-android:name="cz.sodae.doornock.activities.fragments.SiteListFragment"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-app:layoutManager="LinearLayoutManager"
-tools:context="cz.sodae.doornock.activities.fragments.SiteListFragment"
-tools:listitem="@layout/fragment_site"
-/>
+    <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/list"
+    android:name="cz.sodae.doornock.activities.fragments.SiteListFragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layoutManager="LinearLayoutManager"
+    tools:context="cz.sodae.doornock.activities.fragments.SiteListFragment"
+    tools:listitem="@layout/fragment_site"
+    />
+
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/empty"
+        >
+        <include layout="@layout/fragment_site_list_empty" />
+    </RelativeLayout>
+
+
+</RelativeLayout>

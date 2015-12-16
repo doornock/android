@@ -49,37 +49,26 @@ public class SiteListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        SiteManager siteManager = new SiteManager(getContext());
-
-        List<Site> sites = siteManager.findAll();
-
         View view;
+        view = inflater.inflate(R.layout.fragment_site_list, container, false);
 
-        if (sites.size() == 0) {
-            view = inflater.inflate(R.layout.fragment_site_list_empty, container, false);
+        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
 
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getContext(), AddSiteActivity.class));
 
-            FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
-            fab.setOnClickListener(new View.OnClickListener() {
-
-                @Override
-                public void onClick(View view) {
-                    startActivity(new Intent(getContext(), AddSiteActivity.class));
-
-                }
-            });
-            fab.setImageDrawable(new IconicsDrawable(getContext(), GoogleMaterial.Icon.gmd_add).color(Color.WHITE).actionBar());
-
-        } else {
-            view = inflater.inflate(R.layout.fragment_site_list, container, false);
-
-            // Set the adapter
-            if (view instanceof RecyclerView) {
-                Context context = view.getContext();
-                RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-                recyclerView.setAdapter(new SiteRecyclerViewAdapter(sites, mListener));
             }
+        });
+        fab.setImageDrawable(new IconicsDrawable(getContext(), GoogleMaterial.Icon.gmd_add).color(Color.WHITE).actionBar());
+
+        // Set the adapter
+        if (view.findViewById(R.id.list) instanceof RecyclerView) {
+            Context context = view.findViewById(R.id.list).getContext();
+            RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
+            recyclerView.setLayoutManager(new LinearLayoutManager(context));
+            recyclerView.setAdapter(new SiteRecyclerViewAdapter(new SiteManager(getContext()), mListener));
         }
 
         return view;
@@ -89,6 +78,11 @@ public class SiteListFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        RecyclerView r = ((RecyclerView) getView().findViewById(R.id.list));
+        ((SiteRecyclerViewAdapter) r.getAdapter()).refresh();
+        boolean b = r.getAdapter().getItemCount() == 0;
+        getView().findViewById(R.id.empty).setVisibility(b ? View.VISIBLE : View.GONE);
+
     }
 
     @Override
