@@ -103,7 +103,7 @@ public class SiteApi
     }
 
 
-    public void updateDevice(Site site, Key key)
+    public void updateDevice(Site site, Key key) throws ApiException
     {
         try {
 
@@ -120,12 +120,12 @@ public class SiteApi
             String result = client.newCall(request).execute().body().string();
             JSONObject json = new JSONObject(result);
 
-            if (!json.getString("state").equals("OK")) {
-                throw new IOException("NOT OK");
+            if (!json.getString("status").equals("OK")) {
+                throw new ApiException("NOT OK");
             }
 
         } catch (JSONException | IOException e) {
-            e.printStackTrace();
+            throw new ApiException("NOT OK", e);
         }
     }
 
