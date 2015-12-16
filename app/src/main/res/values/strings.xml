@@ -11,6 +11,8 @@
 
 
     <string name="activity_add_site_title">Přidat síť</string>
-    <string name="activity_add_site_">Registrovat</string>
+    <string name="activity_detail_site_title">Detail sítě</string>
+    <string name="activity_detail_site_remove_site">Ostranit síť</string>
+
 
 </resources>

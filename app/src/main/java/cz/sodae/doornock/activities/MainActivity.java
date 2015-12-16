@@ -1,5 +1,6 @@
 package cz.sodae.doornock.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -16,7 +17,10 @@ public class MainActivity extends AppCompatActivity implements SiteListFragment.
 
     @Override
     public void onListFragmentInteraction(Site item) {
-        Toast.makeText(this, item.getUrl(), Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, SiteDetailActivity.class);
+        intent.putExtra(SiteDetailActivity.INTENT_SITE_GUID, item.getGuid());
+        startActivity(intent);
+        //Toast.makeText(this, item.getUrl(), Toast.LENGTH_SHORT).show();
     }
 
     private Drawer drawerMenu = null;
