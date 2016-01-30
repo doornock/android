@@ -183,7 +183,17 @@
                     android:text="-"
                     android:id="@+id/device_key" />
 
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Vygenerovat nový klíč"
+                    android:id="@+id/btn_new_key" />
+
             </LinearLayout>
+
+            <Space
+                android:layout_width="20px"
+                android:layout_height="20px" />
 
             <Button
                 android:layout_width="match_parent"

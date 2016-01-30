@@ -235,7 +235,7 @@ public class AddSiteActivity extends AppCompatActivity {
                 }
 
             } catch (SiteApi.ApiException e) {
-                return result.setException("Nelze se dovolat Sítě", e);
+                return result.setException("Nelze se dovolat Sítě " + e.getMessage(), e);
             } catch (InvalidGUIDException e) {
                 return result.setException("Síte poslala nevalidní GUID", e);
             }

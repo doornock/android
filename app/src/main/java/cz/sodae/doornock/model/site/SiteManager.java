@@ -164,4 +164,18 @@ public class SiteManager
     }
 
 
+
+
+    public List<Door> findDoor(Site site) throws SiteApi.FindDoorsException
+    {
+        return this.api.findDoors(site);
+    }
+
+
+    public void openDoor(Site site, Door door) throws SiteApi.OpenDoorException
+    {
+        this.api.openDoor(site, door);
+    }
+
+
 }

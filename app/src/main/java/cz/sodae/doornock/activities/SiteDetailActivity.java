@@ -1,27 +1,32 @@
 package cz.sodae.doornock.activities;
 
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cz.sodae.doornock.R;
+import cz.sodae.doornock.activities.fragments.SiteDoorListAdapter;
 import cz.sodae.doornock.model.keys.Key;
+import cz.sodae.doornock.model.site.Door;
 import cz.sodae.doornock.model.site.Site;
 import cz.sodae.doornock.model.site.SiteApi;
-import cz.sodae.doornock.model.site.SiteKnockKnock;
 import cz.sodae.doornock.model.site.SiteManager;
 import cz.sodae.doornock.utils.InvalidGUIDException;
 
@@ -49,6 +54,7 @@ public class SiteDetailActivity extends AppCompatActivity {
         }
 
         this.siteManager = new SiteManager(this);
+
         reload(guid);
     }
 
@@ -104,7 +110,7 @@ public class SiteDetailActivity extends AppCompatActivity {
                 .show();
     }
 
-    @OnClick(R.id.fab)
+    @OnClick(R.id.btn_new_key)
     public void onClickUpdateKey(View view) {
         Snackbar.make(view, "Probíhá přegenerování klíče", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show();
@@ -112,6 +118,13 @@ public class SiteDetailActivity extends AppCompatActivity {
         new SiteUpdateKeyTask(this.siteManager, this.site.getGuid()).execute();
     }
 
+
+    @OnClick(R.id.fab)
+    public void onClickOpenDoor(View view) {
+        Intent i = new Intent(this, OpenDoorPopupActivity.class);
+        i.putExtra("guid", this.site.getGuid());
+        startActivityForResult(i, 0);
+    }
 
 
     private class SiteUpdateKeyTask extends AsyncTask<Object, Float, Boolean> {

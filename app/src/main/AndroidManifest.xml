@@ -42,6 +42,15 @@
             android:name=".activities.SiteDetailActivity"
             android:label="@string/activity_detail_site_title"
             android:theme="@style/AppTheme" />
+
+
+
+        <activity
+            android:name=".activities.OpenDoorPopupActivity"
+            android:theme="@android:style/Theme.Holo.Light.Dialog"
+            android:noHistory="true"
+            android:label="Select door" >
+        </activity>
     </application>
 
 </manifest>
