@@ -26,8 +26,6 @@ public class KeyRingActivity extends AppCompatActivity {
 
     private Drawer drawerMenu = null;
 
-    Handler handler = new Handler();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,7 +43,7 @@ public class KeyRingActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                Snackbar.make(view, "Generování", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(view, R.string.activity_detail_site_generating_key, Snackbar.LENGTH_LONG).show();
                 AsyncTask asyncTask = new AsyncTask() {
                     @Override
                     protected Object doInBackground(Object[] objects) {

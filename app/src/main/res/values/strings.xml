@@ -6,20 +6,45 @@
     <string name="menu_activity_key_ring">Klíčenka</string>
     <string name="menu_activity_add_site">Přidat síť</string>
 
+    <string name="fragment_site_list_welcome">Vítejte v Doornock!</string>
+    <string name="fragment_site_list_add_new">Přidejte si novou síť</string>
 
     <string name="activity_key_ring_title">Klíčenka</string>
 
+    <string name="activity_detail_site_title">Detail sítě</string>
+    <string name="activity_detail_site_generating_key">Probíhá přegenerování klíče</string>
+    <string name="activity_detail_site_remove_site">Ostranit síť</string>
+    <string name="activity_detail_site_about_site">O síti</string>
+    <string name="activity_detail_site_url">URL</string>
+    <string name="activity_detail_site_guid">GUID sítě</string>
+    <string name="activity_detail_site_about_account">O účtu</string>
+    <string name="activity_detail_site_account_login">Přihlašovací jméno</string>
+    <string name="activity_detail_site_about_device">O zařízení</string>
+    <string name="activity_detail_site_about_device_id">Identifikátor zařízení</string>
+    <string name="activity_detail_site_api_key">API klíč</string>
+    <string name="activity_detail_site_private_keys">Klíčenka</string>
+    <string name="activity_detail_site_private_key">Klíč</string>
+    <string name="activity_detail_site_private_key_regenerating">Vygenerovat nový klíč</string>
+
 
     <string name="activity_add_site_title">Přidat síť</string>
-    <string name="activity_detail_site_title">Detail sítě</string>
-    <string name="activity_detail_site_remove_site">Ostranit síť</string>
-
-
     <string name="activity_add_site_site_url">URL adresa sítě (http://&#8230;)</string>
     <string name="activity_add_site_know_login">Jsem již zaregistrovaný, přihlasit</string>
     <string name="activity_add_site_device_description">Popisek zařízení</string>
     <string name="activity_add_site_login">Přihlašovací jméno</string>
     <string name="activity_add_site_password">Heslo</string>
     <string name="activity_add_site_add_device">Přidat zařízení</string>
+    <string name="activity_add_site_error_invalid_url">Nevalidní url (musí být http/https)</string>
+    <string name="activity_add_site_error_missing_description">Zajdete krátký popis zařízení</string>
+    <string name="activity_add_site_error_missing_credentials">Nezadali jste přihlašovací jméno</string>
+    <string name="activity_add_site_in_progress">Zpracovávám</string>
+
+
+    <string name="activity_add_site_error_site_already_added">Tato sít je již v seznamu sítí</string>
+    <string name="activity_add_site_error_site_is_unreachable">Nelze se dovolat Sítě</string>
+    <string name="activity_add_site_error_site_registration_failed_with_reason">Registrace do sítě se nezdařila: </string>
+    <string name="activity_add_site_error_site_registration_failed_title">Registrace se nezdařila</string>
+    <string name="activity_add_site_error_site_registration_failed_understand_button">Rozumím</string>
+    <string name="activity_add_site_error_site_add_device_failed_with_reason">Nepodařilo se přidat zařízení: </string>
 
 </resources>

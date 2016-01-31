@@ -1,6 +1,5 @@
 package cz.sodae.doornock.activities;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
@@ -21,10 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.mikepenz.community_material_typeface_library.CommunityMaterial;
-import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
-
-import java.net.URL;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -34,7 +30,6 @@ import cz.sodae.doornock.model.site.Site;
 import cz.sodae.doornock.model.site.SiteApi;
 import cz.sodae.doornock.model.site.SiteKnockKnock;
 import cz.sodae.doornock.model.site.SiteManager;
-import cz.sodae.doornock.utils.GuidPattern;
 import cz.sodae.doornock.utils.InvalidGUIDException;
 
 public class AddSiteActivity extends AppCompatActivity {
@@ -126,19 +121,19 @@ public class AddSiteActivity extends AppCompatActivity {
 
         boolean isUrl = Patterns.WEB_URL.matcher(s_site_url).matches();
         if (s_site_url.equals("") || !isUrl) {
-            site_url.setError("Nevalidní url (musí být http/https)");
+            site_url.setError(getString(R.string.activity_add_site_error_invalid_url));
             site_url.requestFocus();
             return;
         }
 
         if (s_description.equals("")) {
-            description_text.setError("Zajdete krátký popis zařízení");
+            description_text.setError(getString(R.string.activity_add_site_error_missing_description));
             description_text.requestFocus();
             return;
         }
 
         if (know_login.isChecked() && s_login_name.equals("")) {
-            login_username.setError("Nezadali jste přihlašovací jméno");
+            login_username.setError(getString(R.string.activity_add_site_error_missing_credentials));
             login_username.requestFocus();
             return;
         }
@@ -210,7 +205,7 @@ public class AddSiteActivity extends AppCompatActivity {
             AddSiteActivity.this.inCommunication = true;
 
             AlertDialog.Builder factory  = new AlertDialog.Builder(AddSiteActivity.this);
-            factory.setMessage("Zpracovávám");
+            factory.setMessage(R.string.activity_add_site_in_progress);
             progressDialog = factory.create();
             progressDialog.setCancelable(false);
             progressDialog.show();
@@ -231,27 +226,27 @@ public class AddSiteActivity extends AppCompatActivity {
 
                 Site found = siteManager.getByGuid(knock.getGuid());
                 if (found != null) {
-                    return result.alreadyAdded("Tato sít je již v seznamu sítí", knock);
+                    return result.alreadyAdded(getString(R.string.activity_add_site_error_site_already_added), knock);
                 }
 
             } catch (SiteApi.ApiException e) {
-                return result.setException("Nelze se dovolat Sítě " + e.getMessage(), e);
+                return result.setException(getString(R.string.activity_add_site_error_site_already_added), e);
             } catch (InvalidGUIDException e) {
-                return result.setException("Síte poslala nevalidní GUID", e);
+                return result.setException(getString(R.string.activity_add_site_error_site_is_unreachable), e);
             }
 
             if (know_login.equals(false)) {
                 try {
                     siteManager.register(site);
                 } catch (SiteApi.RegistrationFailedException e) {
-                    return result.setException("Registrace do sítě se nezdařila: " + e.getMessage(), e);
+                    return result.setException(getString(R.string.activity_add_site_error_site_registration_failed_with_reason) + e.getMessage(), e);
                 }
             }
 
             try {
                 siteManager.addDevice(site, desc, null);
             } catch (SiteApi.AddDeviceFailedException e) {
-                return result.setException("Nepodařilo se přidat zařízení: " + e.getMessage(), e);
+                return result.setException(getString(R.string.activity_add_site_error_site_add_device_failed_with_reason) + e.getMessage(), e);
             }
             return result;
         }
@@ -287,8 +282,8 @@ public class AddSiteActivity extends AppCompatActivity {
 
             AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(AddSiteActivity.this);
             dlgAlert.setMessage(result.message != null ? result.message : "(?)");
-            dlgAlert.setTitle("Registrace zařízení se nezdařila");
-            dlgAlert.setPositiveButton("Rozumím", null);
+            dlgAlert.setTitle(R.string.activity_add_site_error_site_registration_failed_title);
+            dlgAlert.setPositiveButton(R.string.activity_add_site_error_site_registration_failed_understand_button, null);
             dlgAlert.setCancelable(true);
             dlgAlert.create().show();
         }

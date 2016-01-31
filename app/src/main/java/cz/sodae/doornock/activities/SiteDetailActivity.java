@@ -112,7 +112,7 @@ public class SiteDetailActivity extends AppCompatActivity {
 
     @OnClick(R.id.btn_new_key)
     public void onClickUpdateKey(View view) {
-        Snackbar.make(view, "Probíhá přegenerování klíče", Snackbar.LENGTH_LONG)
+        Snackbar.make(view, R.string.activity_detail_site_generating_key, Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show();
 
         new SiteUpdateKeyTask(this.siteManager, this.site.getGuid()).execute();

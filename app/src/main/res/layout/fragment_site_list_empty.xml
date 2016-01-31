@@ -14,7 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Vítejte v Doornock!"
+            android:text="@string/fragment_site_list_welcome"
             android:gravity="center_vertical|center|center_horizontal"
             android:id="@+id/no_sites"
             />
@@ -23,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Přidejte si novou síť"
+            android:text="@string/fragment_site_list_add_new"
             android:id="@+id/textView"
             android:layout_gravity="center_horizontal|top"
             android:layout_above="@+id/frameLayout"

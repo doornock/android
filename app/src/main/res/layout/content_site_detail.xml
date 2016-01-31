@@ -30,7 +30,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="O síti" />
+                android:text="@string/activity_detail_site_about_site" />
 
             <LinearLayout
                 android:orientation="vertical"
@@ -45,7 +45,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="URL"
+                    android:text="@string/activity_detail_site_url"
                     android:textStyle="bold" />
 
                 <TextView
@@ -67,7 +67,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="GUID"
+                    android:text="@string/activity_detail_site_guid"
                     android:textStyle="bold" />
 
                 <TextView
@@ -82,7 +82,7 @@
                 android:layout_marginTop="20dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="O účtu" />
+                android:text="@string/activity_detail_site_about_account" />
 
             <LinearLayout
                 android:orientation="vertical"
@@ -95,7 +95,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/activity_add_site_login"
+                    android:text="@string/activity_detail_site_account_login"
                     android:textStyle="bold"/>
 
                 <TextView
@@ -110,7 +110,7 @@
                 android:layout_marginTop="20dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="O zařízení" />
+                android:text="@string/activity_detail_site_about_device" />
 
             <LinearLayout
                 android:orientation="vertical"
@@ -123,7 +123,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Device ID"
+                    android:text="@string/activity_detail_site_about_device_id"
                     android:textStyle="bold"
                     />
 
@@ -145,7 +145,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="API Key"
+                    android:text="@string/activity_detail_site_api_key"
                     android:textStyle="bold" />
 
                 <TextView
@@ -160,7 +160,7 @@
                 android:layout_marginTop="20dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Klíče" />
+                android:text="@string/activity_detail_site_private_keys" />
 
 
             <LinearLayout
@@ -174,7 +174,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Klíč"
+                    android:text="@string/activity_detail_site_private_key"
                     android:textStyle="bold" />
 
                 <TextView
@@ -186,7 +186,7 @@
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Vygenerovat nový klíč"
+                    android:text="@string/activity_detail_site_private_key_regenerating"
                     android:id="@+id/btn_new_key" />
 
             </LinearLayout>
