@@ -4,13 +4,16 @@ import android.app.ListActivity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import cz.sodae.doornock.R;
 import cz.sodae.doornock.activities.fragments.SiteDoorListAdapter;
 import cz.sodae.doornock.model.site.Door;
 import cz.sodae.doornock.model.site.Site;
@@ -86,6 +89,9 @@ public class OpenDoorPopupActivity extends ListActivity {
         Site site;
         List<Door> doors;
 
+
+        private SiteApi.FindDoorsException findDoorsException;
+
         public SiteDoorListTask(SiteDoorListAdapter adapter, SiteManager siteManager, String guid) {
             this.adapter = adapter;
             this.siteManager = siteManager;
@@ -110,7 +116,11 @@ public class OpenDoorPopupActivity extends ListActivity {
 
         @Override
         protected void onPostExecute(Boolean ok) {
-            if (!ok || doors == null) return;
+            if (!ok || doors == null) {
+                Toast.makeText(OpenDoorPopupActivity.this, "Error: " + (findDoorsException != null ? findDoorsException.getMessage() : " unknown"), Toast.LENGTH_LONG).show();
+                adapter.clear();
+                return;
+            }
             adapter.clear();
             adapter.addAll(doors);
 

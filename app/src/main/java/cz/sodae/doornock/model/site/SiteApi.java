@@ -3,6 +3,7 @@ package cz.sodae.doornock.model.site;
 import android.util.Base64;
 import android.util.Log;
 
+import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.MultipartBuilder;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -14,39 +15,32 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.util.LinkedList;
 import java.util.List;
 
 import cz.sodae.doornock.model.keys.Key;
+import cz.sodae.doornock.utils.Hmac256;
 import cz.sodae.doornock.utils.InvalidGUIDException;
 import cz.sodae.doornock.utils.security.keys.RSAEncryptUtil;
 
 public class SiteApi
 {
-    private OkHttpClient client = new OkHttpClient();
-
+    private ApiSender apiSender = new ApiSender();
 
     public SiteKnockKnock knockKnock(String url) throws ApiException, InvalidGUIDException
     {
         try {
-            Request request = new Request.Builder()
-                    .url(url + "/knock-knock")
-                    .build();
-
-            String result = client.newCall(request).execute().body().string();
-            JSONObject json = new JSONObject(result);
-
-            if (!json.getString("status").equals("OK")) {
-                throw new ApiException("NOT OK");
-            }
+            JSONObject json = this.apiSender.get(new Site(url), "/v1/site/knock-knock");
 
             JSONObject data = json.getJSONObject("data").getJSONObject("site");
-            SiteKnockKnock site = new SiteKnockKnock(data.getString("guid"), data.getString("title"));
+            SiteKnockKnock site = new SiteKnockKnock(
+                    data.getString("guid"),
+                    data.getString("title")
+            );
             return site;
-        } catch (IllegalArgumentException e) {
-            throw new ApiException(e);
-        } catch (JSONException | IOException e) {
+        } catch (IllegalArgumentException | JSONException | IOException e) {
             throw new ApiException(e);
         }
     }
@@ -55,16 +49,7 @@ public class SiteApi
     public void register(Site site) throws RegistrationFailedException
     {
         try {
-            Request request = new Request.Builder()
-                    .url(site.getUrl() + "/register")
-                    .build();
-
-            String result = client.newCall(request).execute().body().string();
-            JSONObject json = new JSONObject(result);
-
-            if (!json.getString("status").equals("OK")) {
-                throw new ApiException("NOT OK");
-            }
+            JSONObject json = apiSender.get(site, "/v1/user/register-random");
 
             JSONObject data = json.getJSONObject("data");
             site.setCredentials(
@@ -80,25 +65,16 @@ public class SiteApi
     {
         try {
             String encodedKey = RSAEncryptUtil.encodeBASE64(key.getPublicKey().getEncoded());
-            RequestBody rb = new MultipartBuilder()
-                    .type(MultipartBuilder.FORM)
-                    .addFormDataPart("description", description)
-                    .addFormDataPart("public_key", encodedKey)
-                    .build();
 
-            Request request = new Request.Builder()
-                    .url(site.getUrl() + "/add-device?username=" + encodeQueryParam(site.getUsername()) + "&password=" + encodeQueryParam(site.getPassword()))
-                    .post(rb)
-                    .build();
+            JSONObject post = new JSONObject();
+            post.put("description", description);
+            post.put("public_key", encodedKey);
+            post.put("username", site.getUsername());
+            post.put("password", site.getPassword());
 
-            String result = client.newCall(request).execute().body().string();
-            JSONObject json = new JSONObject(result);
+            JSONObject response = apiSender.post(site, "/v1/device/register", post);
 
-            if (!json.getString("status").equals("OK")) {
-                throw new ApiException("NOT OK");
-            }
-
-            JSONObject data = json.getJSONObject("data");
+            JSONObject data = response.getJSONObject("data");
             site.setDeviceId(
                     data.getString("device_id")
             );
@@ -114,24 +90,10 @@ public class SiteApi
     public void updateDevice(Site site, Key key) throws ApiException
     {
         try {
+            JSONObject post = new JSONObject();
+            post.put("public_key",  RSAEncryptUtil.encodeBASE64(key.getPublicKey().getEncoded()));
 
-            RequestBody rb = new MultipartBuilder()
-                    .type(MultipartBuilder.FORM)
-                    .addFormDataPart("public_key", RSAEncryptUtil.encodeBASE64(key.getPublicKey().getEncoded()))
-                    .build();
-
-            Request request = new Request.Builder()
-                    .url(site.getUrl() + "/update-device?api_key=" + encodeQueryParam(site.getApiKey()))
-                    .post(rb)
-                    .build();
-
-            String result = client.newCall(request).execute().body().string();
-            JSONObject json = new JSONObject(result);
-
-            if (!json.getString("status").equals("OK")) {
-                throw new ApiException("NOT OK");
-            }
-
+            JSONObject response = apiSender.post(site, "/v1/device/update", post);
         } catch (JSONException | IOException e) {
             throw new ApiException("NOT OK", e);
         }
@@ -141,17 +103,7 @@ public class SiteApi
     public List<Door> findDoors(Site site) throws FindDoorsException
     {
         try {
-            Request request = new Request.Builder()
-                    .url(site.getUrl() + "/doors-list?api_key=" + encodeQueryParam(site.getApiKey()))
-                    .build();
-
-            String result = client.newCall(request).execute().body().string();
-            JSONObject json = new JSONObject(result);
-
-            if (!json.getString("status").equals("OK")) {
-                throw new ApiException("NOT OK");
-            }
-
+            JSONObject json = apiSender.get(site, "/v1/device/door/list");
             JSONArray data = json.getJSONArray("data");
 
             List<Door> list = new LinkedList<>();
@@ -175,21 +127,78 @@ public class SiteApi
     public void openDoor(Site site, Door door) throws OpenDoorException
     {
         try {
-            Request request = new Request.Builder()
-                    .url(site.getUrl() + "/open-door?api_key=" + encodeQueryParam(site.getApiKey()) + "&door_id=" + encodeQueryParam(door.getId()))
-                    .build();
+            JSONObject post = new JSONObject();
+            post.put("door_id", door.getId());
+            apiSender.post(site, "/v1/device/door/open", post);
+        } catch (JSONException | IOException e) {
+            throw new OpenDoorException(e);
+        }
+    }
 
+
+
+    private class ApiSender
+    {
+        private OkHttpClient client = new OkHttpClient();
+
+        private final String authHeaderKey = "X-API-Auth-V1";
+        public final MediaType JSON
+                = MediaType.parse("application/json; charset=utf-8");
+
+
+        public JSONObject get(Site site, String url) throws IOException, JSONException
+        {
+            Request.Builder request = new Request.Builder()
+                    .url(site.getUrl() + url);
+
+            if (site.getApiKey() != null) {
+                request.header(authHeaderKey, generateAuthHeader(site, "GET", url, ""));
+            }
+            return call(request.build());
+        }
+
+        public JSONObject post(Site site, String url, JSONObject post) throws IOException, JSONException
+        {
+            Request.Builder request = new Request.Builder()
+                    .url(site.getUrl() + url);
+
+            String jsonBody = post.toString();
+            request.post(RequestBody.create(JSON, jsonBody));
+
+            if (site.getApiKey() != null) {
+                request.header(authHeaderKey, generateAuthHeader(site, "POST", url, jsonBody));
+            }
+
+            return call(request.build());
+        }
+
+
+        private JSONObject call(Request request) throws IOException, JSONException
+        {
             String result = client.newCall(request).execute().body().string();
             JSONObject json = new JSONObject(result);
 
             if (!json.getString("status").equals("OK")) {
                 throw new ApiException("NOT OK");
             }
-
-        } catch (JSONException | IOException e) {
-            throw new OpenDoorException(e);
+            return json;
         }
+
+
+
+        private String generateAuthHeader(Site site, String method, String url, String body) throws IOException
+        {
+            try {
+                long now = (System.currentTimeMillis() / 1000L);
+                String input = now + "|" + method + " " + (new URL(site.getUrl() + url)).getPath() + "|" + body;
+                return now + " "  + site.getDeviceId() + " "  +  Hmac256.calculate(site.getApiKey(), input);
+            } catch (Exception e) {
+                throw new IOException(e);
+            }
+        }
+
     }
+
 
 
 

@@ -40,7 +40,8 @@
     <string name="activity_add_site_in_progress">Zpracovávám</string>
 
 
-    <string name="activity_add_site_error_site_already_added">Tato sít je již v seznamu sítí</string>
+    <string name="activity_add_site_error_site_already_added">Tuto síť jíž máte přidanou ve vašem zařízení</string>
+    <string name="activity_add_site_error_site_bad_guid">Bohužel je síť nevalidní (GUID), prosím kontaktujte správce</string>
     <string name="activity_add_site_error_site_is_unreachable">Nelze se dovolat Sítě</string>
     <string name="activity_add_site_error_site_registration_failed_with_reason">Registrace do sítě se nezdařila: </string>
     <string name="activity_add_site_error_site_registration_failed_title">Registrace se nezdařila</string>

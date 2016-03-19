@@ -230,9 +230,9 @@ public class AddSiteActivity extends AppCompatActivity {
                 }
 
             } catch (SiteApi.ApiException e) {
-                return result.setException(getString(R.string.activity_add_site_error_site_already_added), e);
+                return result.setException(getString(R.string.activity_add_site_error_site_registration_failed_with_reason) + e.getMessage(), e);
             } catch (InvalidGUIDException e) {
-                return result.setException(getString(R.string.activity_add_site_error_site_is_unreachable), e);
+                return result.setException(getString(R.string.activity_add_site_error_site_bad_guid), e);
             }
 
             if (know_login.equals(false)) {
