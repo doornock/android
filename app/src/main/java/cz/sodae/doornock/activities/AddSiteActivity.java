@@ -274,9 +274,6 @@ public class AddSiteActivity extends AppCompatActivity {
             AddSiteActivity.this.setKnock(result.siteKnockKnock);
 
             know_login.setChecked(true);
-            //know_login.setEnabled(false);
-            //login_username.setEnabled(false);
-            //login_password.setEnabled(false);
             login_username.setText(result.site.getUsername());
             login_password.setText(result.site.getPassword());
 

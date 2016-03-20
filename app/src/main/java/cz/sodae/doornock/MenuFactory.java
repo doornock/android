@@ -37,7 +37,7 @@ public class MenuFactory
         return drawerItem;
     }
 
-
+/*
     private static IDrawerItem createKeyRingDrawer(Activity context)
     {
         SecondaryDrawerItem drawerItem = new SecondaryDrawerItem().withName(R.string.menu_activity_key_ring)
@@ -48,7 +48,7 @@ public class MenuFactory
         }
         return drawerItem;
     }
-
+*/
 
     private static IDrawerItem createAddSiteDrawer(Activity context)
     {
@@ -72,7 +72,7 @@ public class MenuFactory
                 .withHeaderDivider(false)
                 .addDrawerItems(
                         createMainDrawer(context),
-                        createKeyRingDrawer(context),
+                        //createKeyRingDrawer(context),
                         createAddSiteDrawer(context)
                 ) // add the items we want to use with our Drawer
                 /*
@@ -111,9 +111,11 @@ public class MenuFactory
                         return false;
                     }
                 })
+                /*
                 .addStickyDrawerItems(
                         new SecondaryDrawerItem().withName("Nastavení").withIcon(GoogleMaterial.Icon.gmd_settings).withIdentifier(10)
                 )
+                */
                 .withSavedInstance(savedInstanceState)
                 .build();
     }

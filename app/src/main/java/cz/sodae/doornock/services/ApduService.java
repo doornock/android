@@ -144,10 +144,7 @@ public class ApduService extends HostApduService
         }
 
 
-        return sign(bc);
-
-
-        //return A_OKAY;
+        return A_ERROR_UNKNOWN_COMMAND;
     }
 
     @Override
@@ -181,48 +178,5 @@ public class ApduService extends HostApduService
         return Bytes.concatenate(header, aid, tail);
     }
 
-
-    private byte[] sign(BasicCommand commandApdu)
-    {
-        /*
-        byte[] header = {
-            (byte) 0x00, // CLA - http://www.cardwerk.com/smartcards/smartcard_standard_ISO7816-4_5_basic_organizations.aspx#table8
-            (byte) 0x02,
-            (byte) 0x00,
-            (byte) 0x00,
-        };
-
-        byte[] tail = {
-            (byte) 0x08
-        };
-        */
-
-
-        try {
-            AssetFileDescriptor f = getAssets().openFd("private_key.der");
-            InputStream fis = f.createInputStream();
-            DataInputStream dis = new DataInputStream(fis);
-            byte[] keyBytes = new byte[(int) f.getLength()];
-            dis.readFully(keyBytes);
-            dis.close();
-
-            /*
-            byte[] signed = FileLoader.sign(
-                    commandApdu.getData(),
-                    FileLoader.getPrivateKey(keyBytes)
-            );
-
-            Toast.makeText(ApduService.this, "YEAH!", Toast.LENGTH_SHORT).show();
-
-            return Bytes.concatenate(signed, A_OKAY);
-            */
-            return new byte[0]; // todo
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.e(TAG, e.getMessage());
-            return A_ERROR_INVALID_AUTH;
-        }
-    }
 
 }
