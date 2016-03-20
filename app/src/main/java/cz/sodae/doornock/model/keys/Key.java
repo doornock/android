@@ -11,7 +11,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
-import cz.sodae.doornock.utils.security.keys.SignerAndVerifier;
+import cz.sodae.doornock.utils.SignerAndVerifier;
 
 public class Key
 {

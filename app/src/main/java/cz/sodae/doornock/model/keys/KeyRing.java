@@ -4,14 +4,13 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Base64;
 
-import java.io.IOException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.LinkedList;
 import java.util.List;
 
 import cz.sodae.doornock.model.DatabaseHelper;
-import cz.sodae.doornock.utils.security.keys.RSAEncryptUtil;
 
 public class KeyRing
 {
@@ -21,20 +20,22 @@ public class KeyRing
         this.db = new DatabaseHelper(context);
     }
 
-    /*
-    public Key getPrimary()
-    {
-        List<Key> result = select("primary", new String[]{"1"}, null);
-        if (result.size() == 0) return null;
-        return result.get(0);
-    }
-    */
-
     public Key getById(Long id)
     {
         List<Key> result = select(db.COLUMN_KEYS_ID + " = ?", new String[]{id.toString()}, null);
         if (result.size() == 0) return null;
         return result.get(0);
+    }
+
+    public boolean remove(Key key)
+    {
+        try (SQLiteDatabase connection = db.getWritableDatabase()) {
+            if (key.getId() != 0) {
+                connection.delete(db.TABLE_SITES, db.COLUMN_KEYS_ID + " = ?", new String[]{key.getId().toString()});
+                return true;
+            }
+        }
+        return false;
     }
 
     public List<Key> findAll()
@@ -57,15 +58,13 @@ public class KeyRing
                 try {
                     list.add(
                         new Key(
-                            RSAEncryptUtil.decodeBASE64(c.getString(2)),
-                            RSAEncryptUtil.decodeBASE64(c.getString(3)),
+                            Base64.decode(c.getString(2), Base64.DEFAULT),
+                            Base64.decode(c.getString(3), Base64.DEFAULT),
                             c.getString(1)
                         ).setId(c.getLong(0))
                     );
                     c.moveToNext();
                 } catch (InvalidKeySpecException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
@@ -73,14 +72,14 @@ public class KeyRing
         return list;
     }
 
-    public Key persist(Key key)
+    public Key save(Key key)
     {
         try (SQLiteDatabase connection = db.getWritableDatabase()) {
 
             ContentValues contentValues = new ContentValues();
             contentValues.put(db.COLUMN_KEYS_TITLE, key.getTitle());
-            contentValues.put(db.COLUMN_KEYS_KEY_PRIVATE, RSAEncryptUtil.encodeBASE64(key.getPrivateKey().getEncoded()));
-            contentValues.put(db.COLUMN_KEYS_KEY_PUBLIC, RSAEncryptUtil.encodeBASE64(key.getPublicKey().getEncoded()));
+            contentValues.put(db.COLUMN_KEYS_KEY_PRIVATE, Base64.encodeToString(key.getPrivateKey().getEncoded(), Base64.DEFAULT));
+            contentValues.put(db.COLUMN_KEYS_KEY_PUBLIC, Base64.encodeToString(key.getPublicKey().getEncoded(), Base64.DEFAULT));
 
             if (key.getId() != null) {
                 connection.update(db.TABLE_KEYS, contentValues, db.COLUMN_KEYS_ID + " = ?", new String[]{key.getId().toString()});

@@ -23,7 +23,6 @@ import java.util.List;
 import cz.sodae.doornock.model.keys.Key;
 import cz.sodae.doornock.utils.Hmac256;
 import cz.sodae.doornock.utils.InvalidGUIDException;
-import cz.sodae.doornock.utils.security.keys.RSAEncryptUtil;
 
 public class SiteApi
 {
@@ -64,7 +63,7 @@ public class SiteApi
     public void addDevice(Site site, Key key, String description) throws AddDeviceFailedException
     {
         try {
-            String encodedKey = RSAEncryptUtil.encodeBASE64(key.getPublicKey().getEncoded());
+            String encodedKey = Base64.encodeToString(key.getPublicKey().getEncoded(), Base64.DEFAULT);
 
             JSONObject post = new JSONObject();
             post.put("description", description);
@@ -91,7 +90,7 @@ public class SiteApi
     {
         try {
             JSONObject post = new JSONObject();
-            post.put("public_key",  RSAEncryptUtil.encodeBASE64(key.getPublicKey().getEncoded()));
+            post.put("public_key",  Base64.encodeToString(key.getPublicKey().getEncoded(), Base64.DEFAULT));
 
             JSONObject response = apiSender.post(site, "/v1/device/update", post);
         } catch (JSONException | IOException e) {

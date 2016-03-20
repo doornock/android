@@ -1,10 +1,10 @@
-package cz.sodae.doornock.utils.security.keys;
+package cz.sodae.doornock.utils;
 
 import java.security.*;
 
 public class SignerAndVerifier
 {
-    static final String ALGORITHM = "SHA256withRSA"; // SHA1WithRSA
+    static final String ALGORITHM = "SHA256withRSA";
 
     public static byte[] sign(byte[] data, PrivateKey key) throws Exception {
         Signature signer = Signature.getInstance(ALGORITHM);
