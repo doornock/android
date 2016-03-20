@@ -90,7 +90,7 @@ public class OpenDoorPopupActivity extends ListActivity {
         List<Door> doors;
 
 
-        private SiteApi.FindDoorsException findDoorsException;
+        private SiteManager.FindDoorsException findDoorsException;
 
         public SiteDoorListTask(SiteDoorListAdapter adapter, SiteManager siteManager, String guid) {
             this.adapter = adapter;
@@ -107,7 +107,7 @@ public class OpenDoorPopupActivity extends ListActivity {
             } catch (InvalidGUIDException e) {
                 e.printStackTrace();
                 return false;
-            } catch (SiteApi.FindDoorsException e) {
+            } catch (SiteManager.FindDoorsException e) {
                 e.printStackTrace();
                 return false;
             }
@@ -148,7 +148,7 @@ public class OpenDoorPopupActivity extends ListActivity {
             try {
                 siteManager.openDoor(site, door);
                 return true;
-            } catch (SiteApi.OpenDoorException e) {
+            } catch (SiteManager.OpenDoorException e) {
                 e.printStackTrace();
                 return false;
             }
