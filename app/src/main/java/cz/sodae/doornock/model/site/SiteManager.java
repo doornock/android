@@ -7,13 +7,13 @@ import android.database.sqlite.SQLiteDatabase;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import cz.sodae.doornock.model.DatabaseHelper;
 import cz.sodae.doornock.model.keys.Key;
 import cz.sodae.doornock.model.keys.KeyRing;
 import cz.sodae.doornock.utils.GuidPattern;
 import cz.sodae.doornock.utils.InvalidGUIDException;
+
 
 public class SiteManager
 {
@@ -34,29 +34,80 @@ public class SiteManager
         return api.knockKnock(url);
     }
 
-    public Site register(Site site) throws SiteApi.RegistrationFailedException {
-        api.register(site);
-        this.persist(site);
-        return site;
+
+
+    public Site register(Site site) throws RegistrationFailedException {
+        try {
+            api.register(site);
+            this.save(site);
+            return site;
+        } catch (SiteApi.ApiException e) {
+            throw new RegistrationFailedException(e);
+        }
     }
 
     // key is nullable, if key is null, will be generated!
-    public Site addDevice(Site site, String deviceDescription, Key key) throws SiteApi.AddDeviceFailedException {
-        if (key == null) {
-            key = Key.generateKey(site.getTitle());
+    public Site registerDevice(Site site, String deviceDescription) throws AddDeviceFailedException {
+        try {
+            Key key = Key.generateKey(site.getTitle());
+            api.addDevice(site, key, deviceDescription);
+            site.setKey(key);
+            this.save(site);
+            return site;
+        } catch (SiteApi.ApiException e) {
+            throw new AddDeviceFailedException(e);
         }
-        api.addDevice(site, key, deviceDescription);
-        site.setKey(key);
-        this.persist(site);
-        return site;
     }
 
 
     public Site updateDevice(Site site, Key key) throws SiteApi.ApiException {
         api.updateDevice(site, key);
         site.setKey(key);
-        this.persist(site);
+        this.save(site);
         return site;
+    }
+
+
+
+    public boolean remove(Site site)
+    {
+        if (site.getKey() != null) {
+            keyRing.remove(site.getKey());
+        }
+        try (SQLiteDatabase connection = db.getWritableDatabase()) {
+            if (site.getId() != 0) {
+                connection.delete(db.TABLE_SITES, db.COLUMN_KEYS_ID + " = ?", new String[]{site.getId().toString()});
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    public List<Door> findDoor(Site site) throws FindDoorsException
+    {
+        try {
+            return this.api.findDoors(site);
+        } catch (SiteApi.ApiException e) {
+            throw new FindDoorsException(e);
+        }
+    }
+
+
+    public void openDoor(Site site, Door door) throws OpenDoorException
+    {
+        try {
+            this.api.openDoor(site, door);
+        } catch (SiteApi.ApiException e) {
+            throw new OpenDoorException(e);
+        }
+    }
+
+
+
+    public List<Site> findAll()
+    {
+        return select(null, null, null);
     }
 
 
@@ -67,24 +118,6 @@ public class SiteManager
         List<Site> result = select(db.COLUMN_SITES_GUID + " = ?", new String[]{guid}, null);
         if (result.size() == 0) return null;
         return result.get(0);
-    }
-
-
-    public boolean remove(Site site)
-    {
-        try (SQLiteDatabase connection = db.getWritableDatabase()) {
-            if (site.getId() != 0) {
-                connection.delete(db.TABLE_SITES, db.COLUMN_KEYS_ID + " = ?", new String[]{site.getId().toString()});
-            }
-        }
-        return false;
-    }
-
-
-
-    public List<Site> findAll()
-    {
-        return select(null, null, null);
     }
 
     private List<Site> select(String selection, String[] selectionArgs, String orderBy) {
@@ -134,12 +167,12 @@ public class SiteManager
         return list;
     }
 
-    public Site persist(Site site)
+    public Site save(Site site)
     {
         try (SQLiteDatabase connection = db.getWritableDatabase()) {
 
             if (site.getKey() != null && site.getKey().getId() == null) {
-                keyRing.persist(site.getKey());
+                keyRing.save(site.getKey());
             }
 
             ContentValues contentValues = new ContentValues();
@@ -166,16 +199,76 @@ public class SiteManager
 
 
 
-    public List<Door> findDoor(Site site) throws SiteApi.FindDoorsException
+    public class RegistrationFailedException extends Exception
     {
-        return this.api.findDoors(site);
+        public RegistrationFailedException() {
+        }
+
+        public RegistrationFailedException(String detailMessage) {
+            super(detailMessage);
+        }
+
+        public RegistrationFailedException(String detailMessage, Throwable throwable) {
+            super(detailMessage, throwable);
+        }
+
+        public RegistrationFailedException(Throwable throwable) {
+            super(throwable);
+        }
     }
 
-
-    public void openDoor(Site site, Door door) throws SiteApi.OpenDoorException
+    public class AddDeviceFailedException extends Exception
     {
-        this.api.openDoor(site, door);
+        public AddDeviceFailedException() {
+        }
+
+        public AddDeviceFailedException(String detailMessage) {
+            super(detailMessage);
+        }
+
+        public AddDeviceFailedException(String detailMessage, Throwable throwable) {
+            super(detailMessage, throwable);
+        }
+
+        public AddDeviceFailedException(Throwable throwable) {
+            super(throwable);
+        }
     }
 
+    public class FindDoorsException extends Exception
+    {
+        public FindDoorsException() {
+        }
+
+        public FindDoorsException(String detailMessage) {
+            super(detailMessage);
+        }
+
+        public FindDoorsException(String detailMessage, Throwable throwable) {
+            super(detailMessage, throwable);
+        }
+
+        public FindDoorsException(Throwable throwable) {
+            super(throwable);
+        }
+    }
+
+    public class OpenDoorException extends Exception
+    {
+        public OpenDoorException() {
+        }
+
+        public OpenDoorException(String detailMessage) {
+            super(detailMessage);
+        }
+
+        public OpenDoorException(String detailMessage, Throwable throwable) {
+            super(detailMessage, throwable);
+        }
+
+        public OpenDoorException(Throwable throwable) {
+            super(throwable);
+        }
+    }
 
 }

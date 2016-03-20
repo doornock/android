@@ -3,7 +3,6 @@ package cz.sodae.doornock.activities;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -48,7 +47,7 @@ public class KeyRingActivity extends AppCompatActivity {
                     @Override
                     protected Object doInBackground(Object[] objects) {
                         Key key = Key.generateKey("New key");
-                        keyRing.persist(key);
+                        keyRing.save(key);
                         return key;
                     }
                 };

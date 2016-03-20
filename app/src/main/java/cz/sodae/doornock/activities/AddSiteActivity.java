@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.mikepenz.community_material_typeface_library.CommunityMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
@@ -85,6 +86,7 @@ public class AddSiteActivity extends AppCompatActivity {
                     intent.putExtra("SCAN_MODE", "QR_CODE_MODE");
                     startActivityForResult(intent, QR_CODE_SCAN);
                 } catch (Exception e) {
+                    Toast.makeText(AddSiteActivity.this, getString(R.string.activity_add_site_qr_reader_missing), Toast.LENGTH_LONG).show();
                     Uri marketUri = Uri.parse("market://details?id=com.google.zxing.client.android");
                     Intent marketIntent = new Intent(Intent.ACTION_VIEW, marketUri);
                     startActivity(marketIntent);
@@ -238,14 +240,14 @@ public class AddSiteActivity extends AppCompatActivity {
             if (know_login.equals(false)) {
                 try {
                     siteManager.register(site);
-                } catch (SiteApi.RegistrationFailedException e) {
+                } catch (SiteManager.RegistrationFailedException e) {
                     return result.setException(getString(R.string.activity_add_site_error_site_registration_failed_with_reason) + e.getMessage(), e);
                 }
             }
 
             try {
-                siteManager.addDevice(site, desc, null);
-            } catch (SiteApi.AddDeviceFailedException e) {
+                siteManager.registerDevice(site, desc);
+            } catch (SiteManager.AddDeviceFailedException e) {
                 return result.setException(getString(R.string.activity_add_site_error_site_add_device_failed_with_reason) + e.getMessage(), e);
             }
             return result;
@@ -301,8 +303,7 @@ public class AddSiteActivity extends AppCompatActivity {
 
         public SiteKnockKnock siteKnockKnock;
 
-        public AddDeviceResult alreadyAdded(String message, SiteKnockKnock knockKnock)
-        {
+        public AddDeviceResult alreadyAdded(String message, SiteKnockKnock knockKnock) {
             this.message = message;
             this.siteKnockKnock = knockKnock;
             this.ok = false;

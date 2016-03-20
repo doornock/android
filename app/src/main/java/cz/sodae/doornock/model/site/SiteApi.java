@@ -1,13 +1,12 @@
 package cz.sodae.doornock.model.site;
 
 import android.util.Base64;
-import android.util.Log;
 
 import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.MultipartBuilder;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
+import com.squareup.okhttp.Response;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -45,7 +44,7 @@ public class SiteApi
     }
 
 
-    public void register(Site site) throws RegistrationFailedException
+    public void register(Site site) throws ApiException
     {
         try {
             JSONObject json = apiSender.get(site, "/v1/user/register-random");
@@ -56,11 +55,11 @@ public class SiteApi
                     data.getString("password")
             );
         } catch (JSONException | IOException e) {
-            throw new RegistrationFailedException(e);
+            throw new ApiException(e);
         }
     }
 
-    public void addDevice(Site site, Key key, String description) throws AddDeviceFailedException
+    public void addDevice(Site site, Key key, String description) throws ApiException
     {
         try {
             String encodedKey = Base64.encodeToString(key.getPublicKey().getEncoded(), Base64.DEFAULT);
@@ -81,7 +80,7 @@ public class SiteApi
                     data.getString("api_key")
             );
         } catch (JSONException | IOException e) {
-            throw new AddDeviceFailedException(e);
+            throw new ApiException(e);
         }
     }
 
@@ -99,7 +98,7 @@ public class SiteApi
     }
 
 
-    public List<Door> findDoors(Site site) throws FindDoorsException
+    public List<Door> findDoors(Site site) throws ApiException
     {
         try {
             JSONObject json = apiSender.get(site, "/v1/device/door/list");
@@ -118,19 +117,19 @@ public class SiteApi
             return list;
 
         } catch (JSONException | IOException e) {
-            throw new FindDoorsException(e);
+            throw new ApiException(e);
         }
     }
 
 
-    public void openDoor(Site site, Door door) throws OpenDoorException
+    public void openDoor(Site site, Door door) throws ApiException
     {
         try {
             JSONObject post = new JSONObject();
             post.put("door_id", door.getId());
             apiSender.post(site, "/v1/device/door/open", post);
         } catch (JSONException | IOException e) {
-            throw new OpenDoorException(e);
+            throw new ApiException(e);
         }
     }
 
@@ -174,11 +173,23 @@ public class SiteApi
 
         private JSONObject call(Request request) throws IOException, JSONException
         {
-            String result = client.newCall(request).execute().body().string();
-            JSONObject json = new JSONObject(result);
+            Response response = client.newCall(request).execute();
+            String result = response.body().string();
 
-            if (!json.getString("status").equals("OK")) {
-                throw new ApiException("NOT OK");
+            JSONObject json;
+            try {
+                 json = new JSONObject(result);
+            } catch (JSONException e) {
+                throw new ApiException("Api response is not JSON");
+            }
+
+            if (!json.getString("status").equals("ERROR")) {
+                JSONObject error = json.getJSONObject("error");
+                throw new ApiException("Api response error: #" + error.getInt("code") + " " + error.getString("message"));
+            }
+
+            if (!response.isSuccessful()) {
+                throw new ApiException("Api response status is not successful");
             }
             return json;
         }
@@ -199,13 +210,8 @@ public class SiteApi
     }
 
 
-
-
     public class ApiException extends IOException
     {
-        public ApiException() {
-        }
-
         public ApiException(String detailMessage) {
             super(detailMessage);
         }
@@ -216,79 +222,6 @@ public class SiteApi
 
         public ApiException(Throwable cause) {
             super(cause);
-        }
-    }
-
-
-    public class RegistrationFailedException extends Exception
-    {
-        public RegistrationFailedException() {
-        }
-
-        public RegistrationFailedException(String detailMessage) {
-            super(detailMessage);
-        }
-
-        public RegistrationFailedException(String detailMessage, Throwable throwable) {
-            super(detailMessage, throwable);
-        }
-
-        public RegistrationFailedException(Throwable throwable) {
-            super(throwable);
-        }
-    }
-
-    public class AddDeviceFailedException extends Exception
-    {
-        public AddDeviceFailedException() {
-        }
-
-        public AddDeviceFailedException(String detailMessage) {
-            super(detailMessage);
-        }
-
-        public AddDeviceFailedException(String detailMessage, Throwable throwable) {
-            super(detailMessage, throwable);
-        }
-
-        public AddDeviceFailedException(Throwable throwable) {
-            super(throwable);
-        }
-    }
-
-    public class FindDoorsException extends Exception
-    {
-        public FindDoorsException() {
-        }
-
-        public FindDoorsException(String detailMessage) {
-            super(detailMessage);
-        }
-
-        public FindDoorsException(String detailMessage, Throwable throwable) {
-            super(detailMessage, throwable);
-        }
-
-        public FindDoorsException(Throwable throwable) {
-            super(throwable);
-        }
-    }
-
-    public class OpenDoorException extends Exception
-    {
-        public OpenDoorException() {
-        }
-
-        public OpenDoorException(String detailMessage) {
-            super(detailMessage);
-        }
-
-        public OpenDoorException(String detailMessage, Throwable throwable) {
-            super(detailMessage, throwable);
-        }
-
-        public OpenDoorException(Throwable throwable) {
-            super(throwable);
         }
     }
 
