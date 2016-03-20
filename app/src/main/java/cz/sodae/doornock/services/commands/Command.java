@@ -19,11 +19,6 @@ public class Command
 
     protected int defMaximumLengthResponse;
 
-    private int twoByteToInt(byte upper, byte lower) {
-        return ((upper & 0xff) << 8) | (lower & 0xff);
-    }
-
-
     public Command(byte[] apdu) throws ApduInvalidLengthException {
         this.defClass = apdu[0];
         this.defInstruction = apdu[1];
@@ -79,20 +74,27 @@ public class Command
 
     }
 
-    public Command(byte defClass, byte defInstruction, byte defParameter, byte defParameterSecond, int defMaximumLengthResponse, byte[] defData) {
+    public Command(byte defClass, byte defInstruction, byte defParameter, byte defParameterSecond, int defMaximumLengthResponse, byte[] defData)
+        throws ApduInvalidLengthException {
         this.defClass = defClass;
         this.defInstruction = defInstruction;
         this.defParameter = defParameter;
         this.defParameterSecond = defParameterSecond;
         this.defMaximumLengthResponse = defMaximumLengthResponse;
         this.defData = defData;
+
+        if (defMaximumLengthResponse > 65535 || defMaximumLengthResponse < 0) {
+            throw new ApduInvalidLengthException("Maximum of length is ");
+        }
     }
 
-    public Command(byte defClass, byte defInstruction, int defMaximumLengthResponse) {
+    public Command(byte defClass, byte defInstruction, int defMaximumLengthResponse)
+            throws ApduInvalidLengthException {
         this(defClass, defInstruction, (byte) 0x00, (byte) 0x00, defMaximumLengthResponse, new byte[0]);
     }
 
-    public Command(byte defClass, byte defInstruction) {
+    public Command(byte defClass, byte defInstruction)
+            throws ApduInvalidLengthException {
         this(defClass, defInstruction, 0);
     }
 
@@ -117,21 +119,79 @@ public class Command
         return defData;
     }
 
-    public byte[] composeAPDU()
+
+    public byte[] composeApdu() throws ApduInvalidLengthException
+    {
+        if (defMaximumLengthResponse > 256) {
+            throw new ApduInvalidLengthException("Classic APDU has maximum size of response 256");
+        }
+        if (defData.length > 255) {
+            throw new ApduInvalidLengthException("Classic APDU has maximum size of data 255");
+        }
+
+        byte[] header = {
+                defClass,
+                defInstruction,
+                defParameter,
+                defParameterSecond,
+        };
+
+        return Bytes.concatenate(
+                header,
+                new byte[] {(byte) (0xFF & (defData.length))},
+                defData,
+                new byte[] {(byte) (0xFF & (defMaximumLengthResponse == 256 ? 0 : defMaximumLengthResponse))}
+        );
+    }
+
+    public byte[] composeApduExtended() throws ApduInvalidLengthException
     {
         byte[] header = {
                 defClass,
                 defInstruction,
                 defParameter,
                 defParameterSecond,
-                (byte) defData.length
         };
 
-        byte[] tail = {
-                (byte) defMaximumLengthResponse
-        };
 
-        return Bytes.concatenate(header, getData(), tail);
+        byte[] Lc;
+        byte[] Le;
+
+        int dataSize = getData().length;
+
+        if (dataSize > 0) {
+            Lc = Bytes.concatenate(new byte[] {0x00}, intToTwoByte(dataSize), defData);
+        } else {
+            Lc = new byte[0];
+        }
+
+        byte[] LePart = intToTwoByte(defMaximumLengthResponse == 65536 ? 0 : defMaximumLengthResponse);
+        if (defMaximumLengthResponse == 0) {
+            Le = new byte[0];
+        } else if (dataSize > 0) {
+            Le = LePart;
+        } else {
+            Le = Bytes.concatenate(new byte[] {0x00}, LePart);
+        }
+
+        return Bytes.concatenate(header, Lc, Le);
+    }
+
+    private int twoByteToInt(byte upper, byte lower) {
+        return ((upper & 0xff) << 8) | (lower & 0xff);
+    }
+
+
+    private byte[] intToTwoByte(int number)
+    {
+        if (number < 0) {
+            return new byte[0];
+        }
+
+        return new byte[] {
+                (byte) ((number >> 8) & 0xFF),
+                (byte) (number & 0xFF)
+        };
     }
 
 
