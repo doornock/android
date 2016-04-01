@@ -68,10 +68,25 @@ public class OpenDoorPopupActivity extends ListActivity {
                 new OpenDoorTask(siteManager, site, door, new OnDoorOpenTaskResult() {
                     @Override
                     public void onResult(boolean success) {
-                        Intent returnIntent = new Intent();
-                        returnIntent.putExtra(RESULT_CODE, success);
-                        setResult(RESULT_OK, returnIntent);
-                        finish();
+                        if (success) {
+                            Toast.makeText(
+                                    OpenDoorPopupActivity.this,
+                                    getString(R.string.activity_open_door_popup_door_opened),
+                                    Toast.LENGTH_SHORT
+                            ).show();
+
+                            Intent returnIntent = new Intent();
+                            returnIntent.putExtra(RESULT_CODE, success);
+                            setResult(RESULT_OK, returnIntent);
+                            finish();
+                        } else {
+                            Toast.makeText(
+                                    OpenDoorPopupActivity.this,
+                                    getString(R.string.activity_open_door_popup_door_error),
+                                    Toast.LENGTH_SHORT
+                            ).show();
+
+                        }
                     }
                 }).execute();
             }

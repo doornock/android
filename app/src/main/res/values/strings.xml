@@ -49,4 +49,8 @@
     <string name="activity_add_site_error_site_registration_failed_understand_button">Rozumím</string>
     <string name="activity_add_site_error_site_add_device_failed_with_reason">Nepodařilo se přidat zařízení: </string>
 
+    <string name="activity_open_door_popup_title">Otevřít dveře</string>
+    <string name="activity_open_door_popup_door_opened">Dveře byly otevřeny</string>
+    <string name="activity_open_door_popup_door_error">Při otevírání došlo k chybě na straně serveru</string>
+
 </resources>

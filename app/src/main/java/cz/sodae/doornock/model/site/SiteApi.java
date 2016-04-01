@@ -183,7 +183,7 @@ public class SiteApi
                 throw new ApiException("Api response is not JSON");
             }
 
-            if (!json.getString("status").equals("ERROR")) {
+            if (json.getString("status").equals("ERROR")) {
                 JSONObject error = json.getJSONObject("error");
                 throw new ApiException("Api response error: #" + error.getInt("code") + " " + error.getString("message"));
             }
