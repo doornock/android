@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <host-apdu-service xmlns:android="http://schemas.android.com/apk/res/android"
-    android:title="@string/service_apdu_description"
+    android:description="@string/service_apdu_description"
     android:requireDeviceUnlock="false">
     <aid-group
         android:category="other">
