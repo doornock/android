@@ -32,14 +32,15 @@ public class ApduService extends HostApduService
             (byte)0x00   // SW2	Status byte 2 - Command processing qualifier
     };
 
-    private static final byte[] A_ERROR_INVALID_AUTH = { // @todo fix code
-            (byte)0x66,  // SW1	Status byte 1 - Command processing status
-            (byte)0x02   // SW2	Status byte 2 - Command processing qualifier
+
+    private static final byte[] A_ERROR_INVALID_AUTH = {
+            (byte)0x98,  // SW1	Status byte 1 - Command processing status
+            (byte)0x04   // SW2	Status byte 2 - Command processing qualifier
     };
 
-    private static final byte[] A_ERROR_INVALID_LC = { // @todo fix code
-            (byte)0x66,  // SW1	Status byte 1 - Command processing status
-            (byte)0x01   // SW2	Status byte 2 - Command processing qualifier
+    private static final byte[] A_ERROR_INVALID_LC = {
+            (byte)0x67,  // SW1	Status byte 1 - Command processing status
+            (byte)0x00   // SW2	Status byte 2 - Command processing qualifier
     };
 
     private static final byte[] A_ERROR_UNKNOWN_COMMAND = {
