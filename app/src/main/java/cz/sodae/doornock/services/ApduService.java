@@ -15,7 +15,6 @@ import cz.sodae.doornock.utils.InvalidGUIDException;
 import cz.sodae.doornock.services.commands.Command;
 import cz.sodae.doornock.services.commands.HelloCommand;
 import cz.sodae.doornock.services.commands.SignCommand;
-import cz.sodae.doornock.utils.SignerAndVerifier;
 
 public class ApduService extends HostApduService
 {
@@ -42,6 +41,7 @@ public class ApduService extends HostApduService
             (byte)0x67,  // SW1	Status byte 1 - Command processing status
             (byte)0x00   // SW2	Status byte 2 - Command processing qualifier
     };
+
 
     private static final byte[] A_ERROR_UNKNOWN_COMMAND = {
             (byte)0x69,  // SW1	Status byte 1 - Command processing status
@@ -108,7 +108,13 @@ public class ApduService extends HostApduService
                 byte[] data = bc.getData();
 
                 if (site != null && site.getKey() != null) {
-                    byte[] signed = SignerAndVerifier.sign(data, site.getKey().getPrivateKey());
+
+                    long startTime = System.currentTimeMillis();
+                    byte[] signed = site.getKey().sign(data);
+                    long estimatedTime = System.currentTimeMillis() - startTime;
+
+                    Log.i(TAG, "Singing in " + estimatedTime);
+
 
                     Log.i(TAG, "Signing");
                     showNotification("Unlocking in site " + site.getTitle());
