@@ -4,6 +4,7 @@
     <string name="service_apdu_aid">F0394148148111</string>
 
     <string name="menu_activity_key_ring">Klíčenka</string>
+    <string name="menu_activity_list_site">Vaše sítě</string>
     <string name="menu_activity_add_site">Přidat síť</string>
 
     <string name="fragment_site_list_welcome">Vítejte v Doornock!</string>

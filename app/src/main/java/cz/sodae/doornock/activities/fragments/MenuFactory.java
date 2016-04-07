@@ -1,4 +1,4 @@
-package cz.sodae.doornock;
+package cz.sodae.doornock.activities.fragments;
 
 import android.app.Activity;
 import android.content.Context;
@@ -14,6 +14,7 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
+import cz.sodae.doornock.R;
 import cz.sodae.doornock.activities.AddSiteActivity;
 import cz.sodae.doornock.activities.KeyRingActivity;
 import cz.sodae.doornock.activities.MainActivity;
@@ -28,7 +29,7 @@ public class MenuFactory
     private static IDrawerItem createMainDrawer(Activity context)
     {
         SecondaryDrawerItem drawerItem = new SecondaryDrawerItem()
-                .withName(R.string.app_name)
+                .withName(R.string.menu_activity_list_site)
                 .withIcon(R.mipmap.ic_launcher)
                 .withIdentifier(MENU_ID_MAIN_ACTIVITY);
         if (context instanceof MainActivity) {

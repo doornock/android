@@ -5,11 +5,11 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.widget.Toast;
+
 import com.mikepenz.materialdrawer.Drawer;
 
-import cz.sodae.doornock.MenuFactory;
 import cz.sodae.doornock.R;
+import cz.sodae.doornock.activities.fragments.MenuFactory;
 import cz.sodae.doornock.activities.fragments.SiteListFragment;
 import cz.sodae.doornock.model.site.Site;
 

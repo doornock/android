@@ -14,8 +14,8 @@ import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.materialdrawer.Drawer;
 
-import cz.sodae.doornock.MenuFactory;
 import cz.sodae.doornock.R;
+import cz.sodae.doornock.activities.fragments.MenuFactory;
 import cz.sodae.doornock.model.keys.Key;
 import cz.sodae.doornock.model.keys.KeyRing;
 
