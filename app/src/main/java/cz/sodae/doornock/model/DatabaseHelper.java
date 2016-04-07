@@ -67,6 +67,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        // @todo: GO HELL!!!
         Log.w(
                 DatabaseHelper.class.getName(),
                 "Upgrading database from version " + oldVersion + " to "

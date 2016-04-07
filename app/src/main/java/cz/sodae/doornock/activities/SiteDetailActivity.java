@@ -1,6 +1,5 @@
 package cz.sodae.doornock.activities;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -11,20 +10,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import java.text.DateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cz.sodae.doornock.R;
-import cz.sodae.doornock.activities.fragments.SiteDoorListAdapter;
 import cz.sodae.doornock.model.keys.Key;
-import cz.sodae.doornock.model.site.Door;
 import cz.sodae.doornock.model.site.Site;
 import cz.sodae.doornock.model.site.SiteApi;
 import cz.sodae.doornock.model.site.SiteManager;
