@@ -144,7 +144,7 @@ public class SiteDetailActivity extends AppCompatActivity {
             } catch (InvalidGUIDException e) {
                 e.printStackTrace();
                 return false;
-            } catch (SiteApi.ApiException e) {
+            } catch (SiteApi.SiteApiException e) {
                 e.printStackTrace();
                 return false;
             }

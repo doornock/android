@@ -30,7 +30,7 @@ public class SiteManager
         this.keyRing = new KeyRing(context);
     }
 
-    public SiteKnockKnock create(String url) throws SiteApi.ApiException, InvalidGUIDException {
+    public SiteKnockKnock create(String url) throws SiteApi.SiteApiException, InvalidGUIDException {
         return api.knockKnock(url);
     }
 
@@ -41,7 +41,7 @@ public class SiteManager
             api.register(site);
             this.save(site);
             return site;
-        } catch (SiteApi.ApiException e) {
+        } catch (SiteApi.SiteApiException e) {
             throw new RegistrationFailedException(e);
         }
     }
@@ -54,13 +54,13 @@ public class SiteManager
             site.setKey(key);
             this.save(site);
             return site;
-        } catch (SiteApi.ApiException e) {
+        } catch (SiteApi.SiteApiException e) {
             throw new AddDeviceFailedException(e);
         }
     }
 
 
-    public Site updateDevice(Site site, Key key) throws SiteApi.ApiException {
+    public Site updateDevice(Site site, Key key) throws SiteApi.SiteApiException {
         api.updateDevice(site, key);
         site.setKey(key);
         this.save(site);
@@ -88,7 +88,7 @@ public class SiteManager
     {
         try {
             return this.api.findDoors(site);
-        } catch (SiteApi.ApiException e) {
+        } catch (SiteApi.SiteApiException e) {
             throw new FindDoorsException(e);
         }
     }
@@ -98,7 +98,7 @@ public class SiteManager
     {
         try {
             this.api.openDoor(site, door);
-        } catch (SiteApi.ApiException e) {
+        } catch (SiteApi.SiteApiException e) {
             throw new OpenDoorException(e);
         }
     }

@@ -184,7 +184,7 @@ public class AddSiteActivity extends AppCompatActivity {
             } catch (InvalidGUIDException e) {
                 e.printStackTrace();
                 return null;
-            } catch (SiteApi.ApiException e) {
+            } catch (SiteApi.SiteApiException e) {
                 e.printStackTrace();
                 return null;
             }
@@ -231,7 +231,7 @@ public class AddSiteActivity extends AppCompatActivity {
                     return result.alreadyAdded(getString(R.string.activity_add_site_error_site_already_added), knock);
                 }
 
-            } catch (SiteApi.ApiException e) {
+            } catch (SiteApi.SiteApiException e) {
                 return result.setException(getString(R.string.activity_add_site_error_site_registration_failed_with_reason) + e.getMessage(), e);
             } catch (InvalidGUIDException e) {
                 return result.setException(getString(R.string.activity_add_site_error_site_bad_guid), e);
