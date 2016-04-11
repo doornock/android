@@ -305,6 +305,8 @@ public class AddSiteActivity extends AppCompatActivity {
                 }
 
                 dlgAlert.setMessage(message);
+            } else if (result.alreadyAddedSite != null) {
+                dlgAlert.setMessage(getString(R.string.activity_add_site_error_site_already_added));
             }
 
             dlgAlert.setTitle(R.string.activity_add_site_error_site_registration_failed_title);
