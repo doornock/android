@@ -50,8 +50,18 @@
     <string name="activity_add_site_error_site_registration_failed_understand_button">Rozumím</string>
     <string name="activity_add_site_error_site_add_device_failed_with_reason">Nepodařilo se přidat zařízení: </string>
 
+    <string name="activity_add_site_error_site_registration_is_not_supported">Registrace na Doornock síť není povolena</string>
+    <string name="activity_add_site_error_site_registration_bad_credentials">Zadali jste špatné uživatelské jméno nebo heslo</string>
+
     <string name="activity_open_door_popup_title">Otevřít dveře</string>
     <string name="activity_open_door_popup_door_opened">Dveře byly otevřeny</string>
     <string name="activity_open_door_popup_door_error">Při otevírání došlo k chybě na straně serveru</string>
+
+    <string name="error_api_device_is_blocked">Bohužel zařízení je blokované</string>
+
+    <string name="error_api_invalid_guid">Bohužel je síť nevalidní (GUID), prosím kontaktujte správce</string>
+    <string name="error_api_invalid_json_input">Bohužel při komunikaci serverem nastala chyba: JSON odpověď serveru není validní či neobsahuje správné údaje</string>
+    <string name="error_api_invalid_signature">Bohužel při komunikaci serverem nastala chyba: Bezpečnostní algoritmy nepřijali odpověď, je možný odposlech sítě</string>
+
 
 </resources>

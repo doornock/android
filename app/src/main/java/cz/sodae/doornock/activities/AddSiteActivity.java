@@ -23,14 +23,18 @@ import android.widget.Toast;
 import com.mikepenz.community_material_typeface_library.CommunityMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 
+import org.json.JSONException;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cz.sodae.doornock.R;
+import cz.sodae.doornock.model.keys.Key;
 import cz.sodae.doornock.model.site.Site;
 import cz.sodae.doornock.model.site.SiteApi;
 import cz.sodae.doornock.model.site.SiteKnockKnock;
 import cz.sodae.doornock.model.site.SiteManager;
+import cz.sodae.doornock.utils.ApiSender;
 import cz.sodae.doornock.utils.InvalidGUIDException;
 
 public class AddSiteActivity extends AppCompatActivity {
@@ -51,6 +55,7 @@ public class AddSiteActivity extends AppCompatActivity {
     boolean inCommunication = false;
 
     SiteManager siteManager;
+    SiteApi siteApi;
     SiteKnockKnock loadedSite;
 
     @Override
@@ -95,7 +100,7 @@ public class AddSiteActivity extends AppCompatActivity {
         });
 
         this.siteManager = new SiteManager(this);
-
+        this.siteApi = new SiteApi();
     }
 
     public synchronized void setKnock(SiteKnockKnock site) {
@@ -146,8 +151,8 @@ public class AddSiteActivity extends AppCompatActivity {
             site.setCredentials(s_login_name, s_login_pass);
         }
 
-        AsyncTask async = new AddDeviceTask();
-        async.execute(siteManager, site, s_know_login, s_description);
+        AsyncTask async = new AddDeviceTask(siteManager, siteApi);
+        async.execute(site, s_know_login, s_description);
 
     }
 
@@ -159,7 +164,7 @@ public class AddSiteActivity extends AppCompatActivity {
                 String contents = data.getStringExtra("SCAN_RESULT");
                 site_url.setText(contents);
                 site_url.setError(null);
-                new SiteKnockKnockTask().execute(this.siteManager, contents);
+                new SiteKnockKnockTask(this.siteApi).execute(contents);
             }
         }
     }
@@ -175,16 +180,19 @@ public class AddSiteActivity extends AppCompatActivity {
     }
 
     private class SiteKnockKnockTask extends AsyncTask<Object, Float, SiteKnockKnock> {
+
+        private SiteApi siteApi;
+
+        public SiteKnockKnockTask(SiteApi siteApi) {
+            this.siteApi = siteApi;
+        }
+
         @Override
         protected SiteKnockKnock doInBackground(Object... obj) {
-            SiteManager siteManager = (SiteManager) obj[0];
-            String url = (String) obj[1];
+            String url = (String) obj[0];
             try {
-                return siteManager.create(url);
-            } catch (InvalidGUIDException e) {
-                e.printStackTrace();
-                return null;
-            } catch (SiteApi.SiteApiException e) {
+                return siteApi.knockKnock(url);
+            } catch (Exception e) {
                 e.printStackTrace();
                 return null;
             }
@@ -202,6 +210,14 @@ public class AddSiteActivity extends AppCompatActivity {
 
         AlertDialog progressDialog;
 
+        private SiteManager siteManager;
+        private SiteApi siteApi;
+
+        public AddDeviceTask(SiteManager siteManager, SiteApi siteApi) {
+            this.siteManager = siteManager;
+            this.siteApi = siteApi;
+        }
+
         @Override
         protected void onPreExecute() {
             AddSiteActivity.this.inCommunication = true;
@@ -214,43 +230,36 @@ public class AddSiteActivity extends AppCompatActivity {
         }
 
         protected AddDeviceResult doInBackground(Object... obj) {
-            SiteManager siteManager = (SiteManager) obj[0];
-            Site site = (Site) obj[1];
-            Boolean know_login = (Boolean) obj[2];
-            String desc = (String) obj[3];
+            Site site = (Site) obj[0];
+            Boolean know_login = (Boolean) obj[1];
+            String desc = (String) obj[2];
 
             AddDeviceResult result = new AddDeviceResult(site);
 
             try {
-                SiteKnockKnock knock = siteManager.create(site.getUrl());
+                SiteKnockKnock knock = siteApi.knockKnock(site.getUrl());
                 site.setTitle(knock.getTitle());
                 site.setGuid(knock.getGuid());
 
                 Site found = siteManager.getByGuid(knock.getGuid());
                 if (found != null) {
-                    return result.alreadyAdded(getString(R.string.activity_add_site_error_site_already_added), knock);
+                    return result.alreadyAdded(found, knock);
                 }
 
-            } catch (SiteApi.SiteApiException e) {
-                return result.setException(getString(R.string.activity_add_site_error_site_registration_failed_with_reason) + e.getMessage(), e);
-            } catch (InvalidGUIDException e) {
-                return result.setException(getString(R.string.activity_add_site_error_site_bad_guid), e);
-            }
-
-            if (know_login.equals(false)) {
-                try {
-                    siteManager.register(site);
-                } catch (SiteManager.RegistrationFailedException e) {
-                    return result.setException(getString(R.string.activity_add_site_error_site_registration_failed_with_reason) + e.getMessage(), e);
+                if (know_login.equals(false)) {
+                    siteApi.register(site);
                 }
-            }
 
-            try {
-                siteManager.registerDevice(site, desc);
-            } catch (SiteManager.AddDeviceFailedException e) {
-                return result.setException(getString(R.string.activity_add_site_error_site_add_device_failed_with_reason) + e.getMessage(), e);
+                Key key = Key.generateKey(knock.getTitle());
+                site.setKey(key);
+                siteApi.addDevice(site, key, desc);
+                siteManager.save(site);
+
+                return result;
+
+            } catch (Exception e) {
+                return result.setException(e);
             }
-            return result;
         }
 
 
@@ -268,11 +277,6 @@ public class AddSiteActivity extends AppCompatActivity {
                 return;
             }
 
-            if (result.exception != null) {
-                result.exception.printStackTrace();
-            }
-
-
             AddSiteActivity.this.setKnock(result.siteKnockKnock);
 
             know_login.setChecked(true);
@@ -280,7 +284,29 @@ public class AddSiteActivity extends AppCompatActivity {
             login_password.setText(result.site.getPassword());
 
             AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(AddSiteActivity.this);
-            dlgAlert.setMessage(result.message != null ? result.message : "(?)");
+
+
+            if (result.exception != null) {
+                result.exception.printStackTrace();
+
+                String message = "Unknown error";
+
+                ApiErrorHelper helper = new ApiErrorHelper(AddSiteActivity.this);
+
+                if (result.exception instanceof SiteApi.RegistrationUnsupportedException) {
+                    message = getString(R.string.activity_add_site_error_site_registration_is_not_supported);
+                } else if (result.exception instanceof SiteApi.InvalidUsernameOrPasswordException) {
+                    message = getString(R.string.activity_add_site_error_site_registration_bad_credentials);
+                } else if (result.exception instanceof SiteApi.TechnicalProblemException && result.exception.getCause() != null) {
+                    message = helper.toMessage(result.exception.getCause());
+                } else if (result.exception instanceof ApiSender.ServerErrorException) {
+                    message = "Server error:" + result.exception.getMessage() + "#"
+                            + ((ApiSender.ServerErrorException) result.exception).getServerCode();
+                }
+
+                dlgAlert.setMessage(message);
+            }
+
             dlgAlert.setTitle(R.string.activity_add_site_error_site_registration_failed_title);
             dlgAlert.setPositiveButton(R.string.activity_add_site_error_site_registration_failed_understand_button, null);
             dlgAlert.setCancelable(true);
@@ -298,21 +324,21 @@ public class AddSiteActivity extends AppCompatActivity {
 
         public Site site;
         public boolean ok;
-        public String message;
+
         public Exception exception;
 
         public SiteKnockKnock siteKnockKnock;
+        public Site alreadyAddedSite;
 
-        public AddDeviceResult alreadyAdded(String message, SiteKnockKnock knockKnock) {
-            this.message = message;
+        public AddDeviceResult alreadyAdded(Site site, SiteKnockKnock knockKnock) {
+            this.alreadyAddedSite = site;
             this.siteKnockKnock = knockKnock;
             this.ok = false;
             return this;
         }
 
-        public AddDeviceResult setException(String message, Exception exception) {
+        public AddDeviceResult setException(Exception exception) {
             this.ok = false;
-            this.message = message;
             this.exception = exception;
             return this;
         }

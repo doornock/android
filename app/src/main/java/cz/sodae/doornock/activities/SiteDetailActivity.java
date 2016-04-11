@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -30,6 +31,7 @@ public class SiteDetailActivity extends AppCompatActivity {
     public static final String LOG_TAG = "Doornock/SiteDetail";
 
     SiteManager siteManager;
+    SiteApi siteApi;
     Site site;
 
     @Override
@@ -48,6 +50,7 @@ public class SiteDetailActivity extends AppCompatActivity {
         }
 
         this.siteManager = new SiteManager(this);
+        this.siteApi = new SiteApi();
 
         reload(guid);
     }
@@ -109,7 +112,7 @@ public class SiteDetailActivity extends AppCompatActivity {
         Snackbar.make(view, R.string.activity_detail_site_generating_key, Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show();
 
-        new SiteUpdateKeyTask(this.siteManager, this.site.getGuid()).execute();
+        new SiteUpdateKeyTask(this.siteManager, this.siteApi, this.site.getGuid()).execute();
     }
 
 
@@ -126,9 +129,13 @@ public class SiteDetailActivity extends AppCompatActivity {
         private String guid;
 
         private SiteManager siteManager;
+        private SiteApi siteApi;
 
-        public SiteUpdateKeyTask(SiteManager siteManager, String guid) {
+        private Exception resultException;
+
+        public SiteUpdateKeyTask(SiteManager siteManager, SiteApi siteApi, String guid) {
             this.siteManager = siteManager;
+            this.siteApi = siteApi;
             this.guid = guid;
         }
 
@@ -139,13 +146,12 @@ public class SiteDetailActivity extends AppCompatActivity {
 
                 DateFormat dateFormat = DateFormat.getDateTimeInstance();
                 Key key = Key.generateKey(dateFormat.format(new Date()));
-                siteManager.updateDevice(site, key);
+                siteApi.updateDevice(site, key);
+                site.setKey(key);
+                siteManager.save(site);
                 return true;
-            } catch (InvalidGUIDException e) {
-                e.printStackTrace();
-                return false;
-            } catch (SiteApi.SiteApiException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                resultException = e;
                 return false;
             }
 
@@ -153,6 +159,20 @@ public class SiteDetailActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Boolean ok) {
+            if (!ok) {
+                if (resultException != null) {
+                    String message;
+                    if (resultException instanceof SiteApi.DeviceIsBlockedException) {
+                        message = getString(R.string.error_api_device_is_blocked);
+                    } else {
+                        message = new ApiErrorHelper(SiteDetailActivity.this).toMessage(resultException);
+                    }
+
+                    Toast.makeText(SiteDetailActivity.this, message, Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(SiteDetailActivity.this, "Error", Toast.LENGTH_LONG).show();
+                }
+            }
             reload(guid);
         }
     }

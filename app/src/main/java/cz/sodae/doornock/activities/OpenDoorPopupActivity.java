@@ -4,7 +4,6 @@ import android.app.ListActivity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -26,6 +25,7 @@ public class OpenDoorPopupActivity extends ListActivity {
     public static String RESULT_CODE = "result_code";
     public static final String LOG_TAG = "Doornock/OpenDoorPopup";
 
+    SiteApi siteApi;
     SiteManager siteManager;
     SiteDoorListAdapter listDoorAdapter;
     Site site;
@@ -40,7 +40,9 @@ public class OpenDoorPopupActivity extends ListActivity {
             finish();
         }
 
+
         siteManager = new SiteManager(this);
+        siteApi = new SiteApi();
 
         try {
             site = siteManager.getByGuid(guid);
@@ -58,14 +60,15 @@ public class OpenDoorPopupActivity extends ListActivity {
 
         this.listDoorAdapter = new SiteDoorListAdapter(this, new ArrayList<Door>());
 
-        new SiteDoorListTask(this.listDoorAdapter, this.siteManager, this.site.getGuid()).execute();
+        new SiteDoorListTask(this.listDoorAdapter, this.siteManager, this.siteApi, this.site.getGuid()).execute();
+
         setListAdapter(this.listDoorAdapter);
         getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Door door = listDoorAdapter.getItem(position);
 
-                new OpenDoorTask(siteManager, site, door, new OnDoorOpenTaskResult() {
+                new OpenDoorTask(siteApi, site, door, new OnDoorOpenTaskResult() {
                     @Override
                     public void onResult(boolean success) {
                         if (success) {
@@ -99,17 +102,18 @@ public class OpenDoorPopupActivity extends ListActivity {
 
         private String guid;
         private SiteManager siteManager;
+        private SiteApi siteApi;
         private SiteDoorListAdapter adapter;
 
         Site site;
         List<Door> doors;
 
+        private Exception resultException;
 
-        private SiteManager.FindDoorsException findDoorsException;
-
-        public SiteDoorListTask(SiteDoorListAdapter adapter, SiteManager siteManager, String guid) {
+        public SiteDoorListTask(SiteDoorListAdapter adapter, SiteManager siteManager, SiteApi siteApi, String guid) {
             this.adapter = adapter;
             this.siteManager = siteManager;
+            this.siteApi = siteApi;
             this.guid = guid;
         }
 
@@ -117,22 +121,30 @@ public class OpenDoorPopupActivity extends ListActivity {
         protected Boolean doInBackground(Object... obj) {
             try {
                 site = siteManager.getByGuid(guid);
-                doors = siteManager.findDoor(site);
+                doors = siteApi.findDoors(site);
                 return true;
-            } catch (InvalidGUIDException e) {
-                e.printStackTrace();
-                return false;
-            } catch (SiteManager.FindDoorsException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                resultException = e;
                 return false;
             }
-
         }
 
         @Override
         protected void onPostExecute(Boolean ok) {
             if (!ok || doors == null) {
-                Toast.makeText(OpenDoorPopupActivity.this, "Error: " + (findDoorsException != null ? findDoorsException.getMessage() : " unknown"), Toast.LENGTH_LONG).show();
+
+                if (resultException != null) {
+                    String message;
+                    if (resultException instanceof SiteApi.DeviceIsBlockedException) {
+                        message = getString(R.string.error_api_device_is_blocked);
+                    } else {
+                        message = new ApiErrorHelper(OpenDoorPopupActivity.this).toMessage(resultException);
+                    }
+
+                    Toast.makeText(OpenDoorPopupActivity.this, message, Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(OpenDoorPopupActivity.this, "Error", Toast.LENGTH_LONG).show();
+                }
                 adapter.clear();
                 return;
             }
@@ -146,13 +158,15 @@ public class OpenDoorPopupActivity extends ListActivity {
 
     private class OpenDoorTask extends AsyncTask<Object, Float, Boolean> {
 
-        private SiteManager siteManager;
+        private SiteApi siteApi;
         private Site site;
         private Door door;
         private OnDoorOpenTaskResult result;
 
-        public OpenDoorTask(SiteManager siteManager, Site site, Door door, OnDoorOpenTaskResult result) {
-            this.siteManager = siteManager;
+        private Exception resultException;
+
+        public OpenDoorTask(SiteApi siteManager, Site site, Door door, OnDoorOpenTaskResult result) {
+            this.siteApi = siteManager;
             this.site = site;
             this.door = door;
             this.result = result;
@@ -161,17 +175,30 @@ public class OpenDoorPopupActivity extends ListActivity {
         @Override
         protected Boolean doInBackground(Object... obj) {
             try {
-                siteManager.openDoor(site, door);
+                siteApi.openDoor(site, door);
                 return true;
-            } catch (SiteManager.OpenDoorException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                resultException = e;
                 return false;
             }
-
         }
 
         @Override
         protected void onPostExecute(Boolean ok) {
+            if (!ok) {
+                if (resultException != null) {
+                    String message;
+                    if (resultException instanceof SiteApi.DeviceIsBlockedException) {
+                        message = getString(R.string.error_api_device_is_blocked);
+                    } else {
+                        message = new ApiErrorHelper(OpenDoorPopupActivity.this).toMessage(resultException);
+                    }
+
+                    Toast.makeText(OpenDoorPopupActivity.this, message, Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(OpenDoorPopupActivity.this, "Error", Toast.LENGTH_LONG).show();
+                }
+            }
             result.onResult(ok);
         }
     }

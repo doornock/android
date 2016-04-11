@@ -5,6 +5,10 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -23,51 +27,10 @@ public class SiteManager
 
     private KeyRing keyRing;
 
-    private SiteApi api;
-
     public SiteManager(Context context) {
         this.db = new DatabaseHelper(context);
-        this.api = new SiteApi();
         this.keyRing = new KeyRing(context);
     }
-
-    public SiteKnockKnock create(String url) throws SiteApi.SiteApiException, InvalidGUIDException {
-        return api.knockKnock(url);
-    }
-
-
-
-    public Site register(Site site) throws RegistrationFailedException {
-        try {
-            api.register(site);
-            this.save(site);
-            return site;
-        } catch (SiteApi.SiteApiException e) {
-            throw new RegistrationFailedException(e);
-        }
-    }
-
-    // key is nullable, if key is null, will be generated!
-    public Site registerDevice(Site site, String deviceDescription) throws AddDeviceFailedException {
-        try {
-            Key key = Key.generateKey(site.getTitle());
-            api.addDevice(site, key, deviceDescription);
-            site.setKey(key);
-            this.save(site);
-            return site;
-        } catch (SiteApi.SiteApiException e) {
-            throw new AddDeviceFailedException(e);
-        }
-    }
-
-
-    public Site updateDevice(Site site, Key key) throws SiteApi.SiteApiException {
-        api.updateDevice(site, key);
-        site.setKey(key);
-        this.save(site);
-        return site;
-    }
-
 
 
     public boolean remove(Site site)
@@ -83,27 +46,6 @@ public class SiteManager
         }
         return false;
     }
-
-
-    public List<Door> findDoor(Site site) throws FindDoorsException
-    {
-        try {
-            return this.api.findDoors(site);
-        } catch (SiteApi.SiteApiException e) {
-            throw new FindDoorsException(e);
-        }
-    }
-
-
-    public void openDoor(Site site, Door door) throws OpenDoorException
-    {
-        try {
-            this.api.openDoor(site, door);
-        } catch (SiteApi.SiteApiException e) {
-            throw new OpenDoorException(e);
-        }
-    }
-
 
 
     public List<Site> findAll()
@@ -197,79 +139,5 @@ public class SiteManager
         return site;
     }
 
-
-
-
-    public class RegistrationFailedException extends Exception
-    {
-        public RegistrationFailedException() {
-        }
-
-        public RegistrationFailedException(String detailMessage) {
-            super(detailMessage);
-        }
-
-        public RegistrationFailedException(String detailMessage, Throwable throwable) {
-            super(detailMessage, throwable);
-        }
-
-        public RegistrationFailedException(Throwable throwable) {
-            super(throwable);
-        }
-    }
-
-    public class AddDeviceFailedException extends Exception
-    {
-        public AddDeviceFailedException() {
-        }
-
-        public AddDeviceFailedException(String detailMessage) {
-            super(detailMessage);
-        }
-
-        public AddDeviceFailedException(String detailMessage, Throwable throwable) {
-            super(detailMessage, throwable);
-        }
-
-        public AddDeviceFailedException(Throwable throwable) {
-            super(throwable);
-        }
-    }
-
-    public class FindDoorsException extends Exception
-    {
-        public FindDoorsException() {
-        }
-
-        public FindDoorsException(String detailMessage) {
-            super(detailMessage);
-        }
-
-        public FindDoorsException(String detailMessage, Throwable throwable) {
-            super(detailMessage, throwable);
-        }
-
-        public FindDoorsException(Throwable throwable) {
-            super(throwable);
-        }
-    }
-
-    public class OpenDoorException extends Exception
-    {
-        public OpenDoorException() {
-        }
-
-        public OpenDoorException(String detailMessage) {
-            super(detailMessage);
-        }
-
-        public OpenDoorException(String detailMessage, Throwable throwable) {
-            super(detailMessage, throwable);
-        }
-
-        public OpenDoorException(Throwable throwable) {
-            super(throwable);
-        }
-    }
 
 }
