@@ -29,7 +29,7 @@ public class SiteApi {
                     data.getString("title")
             );
             return site;
-        } catch (ApiSender.ApiException | IllegalArgumentException | JSONException | IOException e) {
+        } catch (ApiSender.ApiException | JSONException | IOException e) {
             throw new SiteApiException(e);
         }
     }
@@ -89,7 +89,7 @@ public class SiteApi {
                     site.getApiKey()
             );
         } catch (ApiSender.ApiException | JSONException | IOException e) {
-            throw new SiteApiException("NOT OK", e);
+            throw new SiteApiException(e);
         }
     }
 

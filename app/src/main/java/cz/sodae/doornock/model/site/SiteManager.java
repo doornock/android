@@ -11,6 +11,7 @@ import java.util.List;
 import cz.sodae.doornock.model.DatabaseHelper;
 import cz.sodae.doornock.model.keys.Key;
 import cz.sodae.doornock.model.keys.KeyRing;
+import cz.sodae.doornock.utils.ApiSender;
 import cz.sodae.doornock.utils.GuidPattern;
 import cz.sodae.doornock.utils.InvalidGUIDException;
 

@@ -99,7 +99,11 @@ public class ApiSender
         try {
             if (json.getString("status").equals("ERROR")) {
                 JSONObject error = json.getJSONObject("error");
-                throw new ApiException("Api response error: #" + error.getInt("code") + " " + error.getString("message"));
+                throw new ServerErrorException(
+                        error.getString("message"),
+                        error.getInt("code"),
+                        response.code()
+                );
             }
 
         } catch (JSONException e) {
@@ -120,12 +124,12 @@ public class ApiSender
         try {
             String sign = response.header(signHeaderKey);
             if (sign == null) {
-                throw new ApiException("Api response is not signed!");
+                throw new SignatureException("Api response is not signed!");
             }
 
             String calc = Hmac256.calculate(apiKey, previousKey + "|" +  content);
             if (!calc.equals(sign)) {
-                throw new ApiException("Api response has bad signature!");
+                throw new SignatureException("Api response has bad signature!");
             }
         } catch (NoSuchAlgorithmException | InvalidKeyException e) {
             throw new IOException(e);
@@ -149,10 +153,44 @@ public class ApiSender
         }
     }
 
+    public class ServerErrorException extends ApiException
+    {
+        private int serverCode;
 
+        private String serverMessage;
+
+        private int httpCode;
+
+        public ServerErrorException(String serverMessage, int serverCode, int httpCode) {
+            super("Api response error: #" + serverCode + " " + serverMessage);
+            this.serverMessage = serverMessage;
+            this.serverCode = serverCode;
+            this.httpCode = httpCode;
+        }
+
+        public int getServerCode() {
+            return serverCode;
+        }
+
+        public String getServerMessage() {
+            return serverMessage;
+        }
+
+        public int getHttpCode() {
+            return httpCode;
+        }
+    }
+
+    public class SignatureException extends ApiException
+    {
+        public SignatureException(String detailMessage) {
+            super(detailMessage);
+        }
+    }
 
     public class ApiException extends Exception
     {
+
         public ApiException(String detailMessage) {
             super(detailMessage);
         }
