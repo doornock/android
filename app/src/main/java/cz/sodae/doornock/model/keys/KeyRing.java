@@ -22,7 +22,7 @@ public class KeyRing
 
     public Key getById(Long id)
     {
-        List<Key> result = select(db.COLUMN_KEYS_ID + " = ?", new String[]{id.toString()}, null);
+        List<Key> result = select(DatabaseHelper.COLUMN_KEYS_ID + " = ?", new String[]{id.toString()}, null);
         if (result.size() == 0) return null;
         return result.get(0);
     }
@@ -31,7 +31,7 @@ public class KeyRing
     {
         try (SQLiteDatabase connection = db.getWritableDatabase()) {
             if (key.getId() != 0) {
-                connection.delete(db.TABLE_SITES, db.COLUMN_KEYS_ID + " = ?", new String[]{key.getId().toString()});
+                connection.delete(DatabaseHelper.TABLE_SITES, DatabaseHelper.COLUMN_KEYS_ID + " = ?", new String[]{key.getId().toString()});
                 return true;
             }
         }
@@ -47,25 +47,26 @@ public class KeyRing
     {
         List<Key> list = new LinkedList<>();
         try (SQLiteDatabase connection = db.getReadableDatabase()) {
-            Cursor c = connection.query(db.TABLE_KEYS, new String[]{
-                    db.COLUMN_KEYS_ID,
-                    db.COLUMN_KEYS_TITLE,
-                    db.COLUMN_KEYS_KEY_PRIVATE,
-                    db.COLUMN_KEYS_KEY_PUBLIC
-            }, selection, selectionArgs, null, null, orderBy);
-            c.moveToFirst();
-            while (!c.isAfterLast()) {
-                try {
-                    list.add(
-                        new Key(
-                            Base64.decode(c.getString(2), Base64.DEFAULT),
-                            Base64.decode(c.getString(3), Base64.DEFAULT),
-                            c.getString(1)
-                        ).setId(c.getLong(0))
-                    );
-                    c.moveToNext();
-                } catch (InvalidKeySpecException e) {
-                    e.printStackTrace();
+            try (Cursor c = connection.query(DatabaseHelper.TABLE_KEYS, new String[]{
+                    DatabaseHelper.COLUMN_KEYS_ID,
+                    DatabaseHelper.COLUMN_KEYS_TITLE,
+                    DatabaseHelper.COLUMN_KEYS_KEY_PRIVATE,
+                    DatabaseHelper.COLUMN_KEYS_KEY_PUBLIC
+            }, selection, selectionArgs, null, null, orderBy)) {
+                c.moveToFirst();
+                while (!c.isAfterLast()) {
+                    try {
+                        list.add(
+                                new Key(
+                                        Base64.decode(c.getString(2), Base64.DEFAULT),
+                                        Base64.decode(c.getString(3), Base64.DEFAULT),
+                                        c.getString(1)
+                                ).setId(c.getLong(0))
+                        );
+                        c.moveToNext();
+                    } catch (InvalidKeySpecException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
@@ -77,14 +78,14 @@ public class KeyRing
         try (SQLiteDatabase connection = db.getWritableDatabase()) {
 
             ContentValues contentValues = new ContentValues();
-            contentValues.put(db.COLUMN_KEYS_TITLE, key.getTitle());
-            contentValues.put(db.COLUMN_KEYS_KEY_PRIVATE, Base64.encodeToString(key.getPrivateKey().getEncoded(), Base64.DEFAULT));
-            contentValues.put(db.COLUMN_KEYS_KEY_PUBLIC, Base64.encodeToString(key.getPublicKey().getEncoded(), Base64.DEFAULT));
+            contentValues.put(DatabaseHelper.COLUMN_KEYS_TITLE, key.getTitle());
+            contentValues.put(DatabaseHelper.COLUMN_KEYS_KEY_PRIVATE, Base64.encodeToString(key.getPrivateKey().getEncoded(), Base64.DEFAULT));
+            contentValues.put(DatabaseHelper.COLUMN_KEYS_KEY_PUBLIC, Base64.encodeToString(key.getPublicKey().getEncoded(), Base64.DEFAULT));
 
             if (key.getId() != null) {
-                connection.update(db.TABLE_KEYS, contentValues, db.COLUMN_KEYS_ID + " = ?", new String[]{key.getId().toString()});
+                connection.update(DatabaseHelper.TABLE_KEYS, contentValues, DatabaseHelper.COLUMN_KEYS_ID + " = ?", new String[]{key.getId().toString()});
             } else {
-                long id = connection.insert(db.TABLE_KEYS, null, contentValues);
+                long id = connection.insert(DatabaseHelper.TABLE_KEYS, null, contentValues);
                 key.setId(id);
             }
         }

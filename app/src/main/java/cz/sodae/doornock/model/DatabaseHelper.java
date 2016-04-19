@@ -25,7 +25,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_SITES_KEY = "key_id";
 
     private static final String DATABASE_NAME = "db.db";
-    private static final int DATABASE_VERSION = 4; // todo: be aware, change will remove db!
+
+    /**
+     * Create a migration {@link #onUpgrade} when you create new version instead of destroy DB
+     */
+    private static final int DATABASE_VERSION = 4;
 
     // Database creation sql statement
     private static final String DATABASE_CREATE_KEYS =
@@ -67,7 +71,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // @todo: GO HELL!!!
         Log.w(
                 DatabaseHelper.class.getName(),
                 "Upgrading database from version " + oldVersion + " to "
