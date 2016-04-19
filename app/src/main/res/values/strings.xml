@@ -64,4 +64,7 @@
     <string name="error_api_invalid_signature">Bohužel při komunikaci serverem nastala chyba: Bezpečnostní algoritmy nepřijali odpověď, je možný odposlech sítě</string>
 
 
+    <string name="activity_open_door_popup_list_has_access">%1$s - Máte přístup</string>
+    <string name="activity_open_door_popup_list_has_not_access">%1$s - Nemáte přístup</string>
+
 </resources>

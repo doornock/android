@@ -25,7 +25,7 @@ public class Door
         return title;
     }
 
-    public boolean isAccess() {
+    public boolean hasAccess() {
         return access;
     }
 }

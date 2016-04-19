@@ -20,10 +20,9 @@ public class SiteDoorListAdapter extends ArrayAdapter<Door>
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        // Get the data item for this position
         Door door = getItem(position);
-        // Check if an existing view is being reused, otherwise inflate the view
-        ViewHolder viewHolder; // view lookup cache stored in tag
+
+        ViewHolder viewHolder;
         if (convertView == null) {
             viewHolder = new ViewHolder();
             LayoutInflater inflater = LayoutInflater.from(getContext());
@@ -31,13 +30,18 @@ public class SiteDoorListAdapter extends ArrayAdapter<Door>
             viewHolder.name = (TextView) convertView.findViewById(R.id.door_title);
             viewHolder.description = (TextView) convertView.findViewById(R.id.door_description);
             convertView.setTag(viewHolder);
+
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        // Populate the data into the template view using the data object
+
         viewHolder.name.setText(door.getTitle());
-        viewHolder.description.setText(door.getId() + " - Přístup: " + (door.isAccess() ? "Ano" : "Ne"));
-        // Return the completed view to render on screen
+        viewHolder.description.setText(String.format(getContext().getString(
+                door.hasAccess()
+                ? R.string.activity_open_door_popup_list_has_access
+                : R.string.activity_open_door_popup_list_has_not_access
+        ), door.getId()));
+
         return convertView;
     }
 
