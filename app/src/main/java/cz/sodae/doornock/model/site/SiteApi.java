@@ -23,7 +23,7 @@ public class SiteApi {
     public SiteKnockKnock knockKnock(String url)
             throws TechnicalProblemException {
         try {
-            JSONObject json = this.apiSender.get(rtrimSlash(url) + "/v1/site/knock-knock");
+            JSONObject json = this.apiSender.get(rtrimSlash(url) + "/api/v1/site/knock-knock");
 
             JSONObject data = json.getJSONObject("data").getJSONObject("site");
             SiteKnockKnock site = new SiteKnockKnock(
@@ -45,7 +45,7 @@ public class SiteApi {
             TechnicalProblemException  {
         try {
 
-            JSONObject json = apiSender.get(rtrimSlash(site.getUrl()) + "/v1/user/register-random");
+            JSONObject json = apiSender.get(rtrimSlash(site.getUrl()) + "/api/v1/user/register-random");
 
             JSONObject data = json.getJSONObject("data");
             site.setCredentials(
@@ -82,7 +82,7 @@ public class SiteApi {
             post.put("password", site.getPassword());
 
             JSONObject response = apiSender.post(
-                    rtrimSlash(site.getUrl()) + "/v1/device/register",
+                    rtrimSlash(site.getUrl()) + "/api/v1/device/register",
                     post
             );
 
@@ -117,7 +117,7 @@ public class SiteApi {
             post.put("public_key", Base64.encodeToString(key.getPublicKey().getEncoded(), Base64.DEFAULT));
 
             JSONObject response = apiSender.post(
-                    rtrimSlash(site.getUrl()) + "/v1/device/update",
+                    rtrimSlash(site.getUrl()) + "/api/v1/device/update",
                     post,
                     site.getDeviceId(),
                     site.getApiKey()
@@ -141,7 +141,7 @@ public class SiteApi {
 
         try {
             JSONObject json = apiSender.get(
-                    rtrimSlash(site.getUrl()) + "/v1/device/door/list",
+                    rtrimSlash(site.getUrl()) + "/api/v1/device/door/list",
                     site.getDeviceId(),
                     site.getApiKey()
             );
@@ -179,7 +179,7 @@ public class SiteApi {
             JSONObject post = new JSONObject();
             post.put("door_id", door.getId());
             JSONObject response = apiSender.post(
-                    rtrimSlash(site.getUrl()) + "/v1/device/door/open",
+                    rtrimSlash(site.getUrl()) + "/api/v1/device/door/open",
                     post,
                     site.getDeviceId(),
                     site.getApiKey()

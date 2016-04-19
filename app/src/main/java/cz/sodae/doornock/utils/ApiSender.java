@@ -14,6 +14,9 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+/**
+ * HTTP Request API for JSON communication and HMAC-SHA256 verification and authentication
+ */
 public class ApiSender
 {
     private OkHttpClient client = new OkHttpClient();
@@ -27,7 +30,9 @@ public class ApiSender
             = MediaType.parse("application/json; charset=utf-8");
 
 
-
+    /**
+     * Sends unsigned GET http request and it does not verification
+     */
     public JSONObject get(String url) throws IOException, ApiException {
         Request.Builder request = new Request.Builder()
                 .url(url);
@@ -39,6 +44,9 @@ public class ApiSender
     }
 
 
+    /**
+     * Sends unsigned POST http request (with JSON data) and it does not verification
+     */
     public JSONObject post(String url, JSONObject post) throws IOException, ApiException {
         Request.Builder request = new Request.Builder()
                 .url(url);
@@ -53,7 +61,9 @@ public class ApiSender
 
 
 
-
+    /**
+     * Sends signed GET http request and verify output
+     */
     public JSONObject get(String url, String id, String apiKey) throws IOException, ApiException {
         Request.Builder request = new Request.Builder()
                 .url(url);
@@ -68,6 +78,11 @@ public class ApiSender
         return convertSuccessResponse(response, content);
     }
 
+
+
+    /**
+     * Sends signed POST http request and verify output
+     */
     public JSONObject post(String url, JSONObject post, String id, String apiKey)
             throws IOException, ApiException {
         Request.Builder request = new Request.Builder()
@@ -87,6 +102,13 @@ public class ApiSender
     }
 
 
+    /**
+     * Convert success response to json object
+     * @param response response object
+     * @param content preloaded content, because response could be used twice, but content is once-readable
+     * @return json data
+     * @throws ApiException when data is not JSON or response is not successful
+     */
     private JSONObject convertSuccessResponse(Response response, String content)
             throws ApiException {
         JSONObject json;
@@ -118,6 +140,12 @@ public class ApiSender
     }
 
 
+    /**
+     * Verify signature
+     * @param response response object
+     * @param content preloaded content, because response could be used twice, but content is once-readable
+     * @throws ApiException when signature is not ok or missing
+     */
     private void checkResponseSign(Response response, String content, String previousKey, String apiKey)
             throws IOException, ApiException
     {
@@ -131,7 +159,10 @@ public class ApiSender
             if (!calc.equals(sign)) {
                 throw new SignatureException("Api response has bad signature!");
             }
-        } catch (NoSuchAlgorithmException | InvalidKeyException e) {
+
+        } catch (NoSuchAlgorithmException e) {
+            throw new IOException(e);
+        } catch (InvalidKeyException e) {
             throw new IOException(e);
         }
     }
@@ -148,10 +179,14 @@ public class ApiSender
             long now = (System.currentTimeMillis() / 1000L);
             String input = now + "|" + method + " " + (new URL(url)).getPath() + "|" + body;
             return now + " "  + deviceId + " "  +  Hmac256.calculate(apiKey, input);
-        } catch (NoSuchAlgorithmException | InvalidKeyException e) {
+
+        } catch (NoSuchAlgorithmException e) {
+            throw new IOException(e);
+        } catch (InvalidKeyException e) {
             throw new IOException(e);
         }
     }
+
 
     public class ServerErrorException extends ApiException
     {
