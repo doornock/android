@@ -26,6 +26,12 @@ public class SiteManager {
     }
 
 
+    /**
+     * Remove site and their key
+     *
+     * @param site
+     * @return
+     */
     public boolean remove(Site site) {
         if (site.getKey() != null) {
             keyRing.remove(site.getKey());
@@ -39,12 +45,20 @@ public class SiteManager {
         return false;
     }
 
-
+    /**
+     * @return non filtered list registered sites
+     */
     public List<Site> findAll() {
         return select(null, null, null);
     }
 
 
+    /**
+     * Return Site by GUID
+     *
+     * @param guid certain guid of Doornock site
+     * @return Doornock site, or null if not found
+     */
     public Site getByGuid(String guid) throws InvalidGUIDException {
         GuidPattern.validOrThrow(guid);
         guid = guid.toUpperCase();
@@ -101,6 +115,9 @@ public class SiteManager {
         return list;
     }
 
+    /**
+     * Save data about site. If is not already saved, it fill id
+     */
     public Site save(Site site) {
         try (SQLiteDatabase connection = db.getWritableDatabase()) {
 

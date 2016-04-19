@@ -19,12 +19,24 @@ public class KeyRing {
         this.db = new DatabaseHelper(context);
     }
 
+    /**
+     * Return Key in database
+     *
+     * @param id key id
+     * @return Key, or null if not found
+     */
     public Key getById(Long id) {
         List<Key> result = select(DatabaseHelper.COLUMN_KEYS_ID + " = ?", new String[]{id.toString()}, null);
         if (result.size() == 0) return null;
         return result.get(0);
     }
 
+    /**
+     * Remove key from db
+     *
+     * @param key
+     * @return is found and removed
+     */
     public boolean remove(Key key) {
         try (SQLiteDatabase connection = db.getWritableDatabase()) {
             if (key.getId() != 0) {
@@ -35,6 +47,9 @@ public class KeyRing {
         return false;
     }
 
+    /**
+     * @return non filtered list of keys
+     */
     public List<Key> findAll() {
         return select(null, null, null);
     }
@@ -68,6 +83,10 @@ public class KeyRing {
         return list;
     }
 
+
+    /**
+     * Save data about key. If is not already saved, it fill id
+     */
     public Key save(Key key) {
         try (SQLiteDatabase connection = db.getWritableDatabase()) {
 

@@ -16,9 +16,24 @@ import cz.sodae.doornock.utils.SignerAndVerifier;
 public class Key {
     static final String ALGORITHM = "RSA";
 
+    /**
+     * Local id
+     */
     private Long id;
+
+    /**
+     * Name
+     */
     private String title;
+
+    /**
+     * Private key
+     */
     private PrivateKey privateKey;
+
+    /**
+     * Public key
+     */
     private PublicKey publicKey;
 
 
@@ -77,14 +92,26 @@ public class Key {
         return publicKey;
     }
 
+    /**
+     * Sign data SHA-256 with private key
+     */
     public byte[] sign(byte[] data) throws Exception {
         return SignerAndVerifier.sign(data, this.privateKey);
     }
 
+    /**
+     * Verify data if is signed by this private key and SHA-256
+     */
     public boolean verify(byte[] data, byte[] signature) throws Exception {
         return SignerAndVerifier.verify(data, this.publicKey, signature);
     }
 
+    /**
+     * Generates object with 2048 bits RSA key
+     *
+     * @param title human readable name
+     * @return entity with generated key
+     */
     public static Key generateKey(String title) {
         try {
             KeyPairGenerator generator = KeyPairGenerator.getInstance(ALGORITHM);

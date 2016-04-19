@@ -20,6 +20,14 @@ public class SiteApi {
     final int CODE_BAD_CREDENTIALS = 20;
     final int CODE_REGISTRATION_UNSUPPORTED = -1;
 
+
+    /**
+     * Ask API server to information about Doornock site
+     *
+     * @param url URL of network
+     * @return loaded information
+     * @throws TechnicalProblemException
+     */
     public SiteKnockKnock knockKnock(String url)
             throws TechnicalProblemException {
         try {
@@ -39,6 +47,14 @@ public class SiteApi {
     }
 
 
+    /**
+     * Register user to network, required only URL - experimental functionality, on server could be disabled
+     *
+     * @param site Site with URL
+     * @throws ApiSender.ApiException
+     * @throws RegistrationUnsupportedException
+     * @throws TechnicalProblemException
+     */
     public void register(Site site)
             throws ApiSender.ApiException,
             RegistrationUnsupportedException,
@@ -65,6 +81,18 @@ public class SiteApi {
 
     }
 
+
+    /**
+     * Register device to Doornock site and fill device id and API key
+     *
+     * @param site        site with URL, username, password
+     * @param key         generated key with public key
+     * @param description description about device
+     * @throws ApiSender.ApiException
+     * @throws InvalidUsernameOrPasswordException
+     * @throws DeviceIsBlockedException
+     * @throws TechnicalProblemException
+     */
     public void addDevice(Site site, Key key, String description)
             throws ApiSender.ApiException,
             InvalidUsernameOrPasswordException,
@@ -107,6 +135,16 @@ public class SiteApi {
     }
 
 
+    /**
+     * Update public key on server, API key required
+     *
+     * @param site with site url, api key, device id
+     * @param key  new key
+     * @throws ApiSender.ApiException
+     * @throws InvalidUsernameOrPasswordException
+     * @throws DeviceIsBlockedException
+     * @throws TechnicalProblemException
+     */
     public void updateDevice(Site site, Key key)
             throws ApiSender.ApiException,
             InvalidUsernameOrPasswordException,
@@ -134,6 +172,15 @@ public class SiteApi {
     }
 
 
+    /**
+     * Ask server to list of doors
+     *
+     * @param site with site url, api key, device id
+     * @return list of doors
+     * @throws ApiSender.ApiException
+     * @throws DeviceIsBlockedException
+     * @throws TechnicalProblemException
+     */
     public List<Door> findDoors(Site site)
             throws ApiSender.ApiException,
             DeviceIsBlockedException,
@@ -171,6 +218,15 @@ public class SiteApi {
     }
 
 
+    /**
+     * Send server command to open door
+     *
+     * @param site with site url, api key, device id
+     * @param door door which was get in {@link #findDoors(Site)}
+     * @throws ApiSender.ApiException
+     * @throws DeviceIsBlockedException
+     * @throws TechnicalProblemException
+     */
     public void openDoor(Site site, Door door)
             throws ApiSender.ApiException,
             DeviceIsBlockedException,

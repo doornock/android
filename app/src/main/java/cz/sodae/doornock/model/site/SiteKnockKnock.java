@@ -3,6 +3,9 @@ package cz.sodae.doornock.model.site;
 import cz.sodae.doornock.utils.GuidPattern;
 import cz.sodae.doornock.utils.InvalidGUIDException;
 
+/**
+ * Information about Doornock site from API
+ */
 public class SiteKnockKnock {
 
     private String title;

@@ -1,5 +1,8 @@
 package cz.sodae.doornock.model.site;
 
+/**
+ * Entity representing Door from API
+ */
 public class Door {
 
     private String id;
