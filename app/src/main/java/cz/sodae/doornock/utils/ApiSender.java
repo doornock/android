@@ -17,8 +17,7 @@ import okhttp3.Response;
 /**
  * HTTP Request API for JSON communication and HMAC-SHA256 verification and authentication
  */
-public class ApiSender
-{
+public class ApiSender {
     private OkHttpClient client = new OkHttpClient();
 
     private final String authHeaderKey = "X-API-Auth-V1";
@@ -60,7 +59,6 @@ public class ApiSender
     }
 
 
-
     /**
      * Sends signed GET http request and verify output
      */
@@ -77,7 +75,6 @@ public class ApiSender
         checkResponseSign(response, content, authHeaderValue, apiKey);
         return convertSuccessResponse(response, content);
     }
-
 
 
     /**
@@ -104,8 +101,9 @@ public class ApiSender
 
     /**
      * Convert success response to json object
+     *
      * @param response response object
-     * @param content preloaded content, because response could be used twice, but content is once-readable
+     * @param content  preloaded content, because response could be used twice, but content is once-readable
      * @return json data
      * @throws ApiException when data is not JSON or response is not successful
      */
@@ -142,20 +140,20 @@ public class ApiSender
 
     /**
      * Verify signature
+     *
      * @param response response object
-     * @param content preloaded content, because response could be used twice, but content is once-readable
+     * @param content  preloaded content, because response could be used twice, but content is once-readable
      * @throws ApiException when signature is not ok or missing
      */
     private void checkResponseSign(Response response, String content, String previousKey, String apiKey)
-            throws IOException, ApiException
-    {
+            throws IOException, ApiException {
         try {
             String sign = response.header(signHeaderKey);
             if (sign == null) {
                 throw new SignatureException("Api response is not signed!");
             }
 
-            String calc = Hmac256.calculate(apiKey, previousKey + "|" +  content);
+            String calc = Hmac256.calculate(apiKey, previousKey + "|" + content);
             if (!calc.equals(sign)) {
                 throw new SignatureException("Api response has bad signature!");
             }
@@ -178,7 +176,7 @@ public class ApiSender
         try {
             long now = (System.currentTimeMillis() / 1000L);
             String input = now + "|" + method + " " + (new URL(url)).getPath() + "|" + body;
-            return now + " "  + deviceId + " "  +  Hmac256.calculate(apiKey, input);
+            return now + " " + deviceId + " " + Hmac256.calculate(apiKey, input);
 
         } catch (NoSuchAlgorithmException e) {
             throw new IOException(e);
@@ -188,8 +186,7 @@ public class ApiSender
     }
 
 
-    public class ServerErrorException extends ApiException
-    {
+    public class ServerErrorException extends ApiException {
         private int serverCode;
 
         private String serverMessage;
@@ -216,15 +213,13 @@ public class ApiSender
         }
     }
 
-    public class SignatureException extends ApiException
-    {
+    public class SignatureException extends ApiException {
         public SignatureException(String detailMessage) {
             super(detailMessage);
         }
     }
 
-    public class ApiException extends Exception
-    {
+    public class ApiException extends Exception {
 
         public ApiException(String detailMessage) {
             super(detailMessage);

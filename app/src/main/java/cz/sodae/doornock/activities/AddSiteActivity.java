@@ -5,9 +5,9 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Patterns;
 import android.view.View;
@@ -23,8 +23,6 @@ import android.widget.Toast;
 import com.mikepenz.community_material_typeface_library.CommunityMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 
-import org.json.JSONException;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -35,20 +33,27 @@ import cz.sodae.doornock.model.site.SiteApi;
 import cz.sodae.doornock.model.site.SiteKnockKnock;
 import cz.sodae.doornock.model.site.SiteManager;
 import cz.sodae.doornock.utils.ApiSender;
-import cz.sodae.doornock.utils.InvalidGUIDException;
 
 public class AddSiteActivity extends AppCompatActivity {
 
-    @Bind(R.id.site_url) EditText site_url;
-    @Bind(R.id.login_username) EditText login_username;
-    @Bind(R.id.login_password) EditText login_password;
-    @Bind(R.id.know_login) CheckBox know_login;
-    @Bind(R.id.description) EditText description_text;
-    @Bind(R.id.btn_scan_qr) ImageButton btn_scan_qr;
+    @Bind(R.id.site_url)
+    EditText site_url;
+    @Bind(R.id.login_username)
+    EditText login_username;
+    @Bind(R.id.login_password)
+    EditText login_password;
+    @Bind(R.id.know_login)
+    CheckBox know_login;
+    @Bind(R.id.description)
+    EditText description_text;
+    @Bind(R.id.btn_scan_qr)
+    ImageButton btn_scan_qr;
 
 
-    @Bind(R.id.loaded_site_guid) TextView loaded_site_guid;
-    @Bind(R.id.loaded_site_title) TextView loaded_site_title;
+    @Bind(R.id.loaded_site_guid)
+    TextView loaded_site_guid;
+    @Bind(R.id.loaded_site_title)
+    TextView loaded_site_title;
 
     final static int QR_CODE_SCAN = 1;
 
@@ -116,8 +121,7 @@ public class AddSiteActivity extends AppCompatActivity {
 
 
     @OnClick(R.id.btn_start)
-    public void onSubmit(Button button)
-    {
+    public void onSubmit(Button button) {
         if (inCommunication) return;
 
         final String s_site_url = site_url.getText().toString();
@@ -170,10 +174,9 @@ public class AddSiteActivity extends AppCompatActivity {
     }
 
 
-    protected void onKnownLoginChecked(boolean isChecked)
-    {
-        final LinearLayout login_frame =  (LinearLayout) findViewById(R.id.login_frame);
-        login_frame.setVisibility( isChecked ? View.VISIBLE : View.GONE);
+    protected void onKnownLoginChecked(boolean isChecked) {
+        final LinearLayout login_frame = (LinearLayout) findViewById(R.id.login_frame);
+        login_frame.setVisibility(isChecked ? View.VISIBLE : View.GONE);
         login_username.setEnabled(isChecked);
         login_password.setEnabled(isChecked);
 
@@ -222,7 +225,7 @@ public class AddSiteActivity extends AppCompatActivity {
         protected void onPreExecute() {
             AddSiteActivity.this.inCommunication = true;
 
-            AlertDialog.Builder factory  = new AlertDialog.Builder(AddSiteActivity.this);
+            AlertDialog.Builder factory = new AlertDialog.Builder(AddSiteActivity.this);
             factory.setMessage(R.string.activity_add_site_in_progress);
             progressDialog = factory.create();
             progressDialog.setCancelable(false);
@@ -263,7 +266,6 @@ public class AddSiteActivity extends AppCompatActivity {
         }
 
 
-
         protected void onPostExecute(AddDeviceResult result) {
 
             progressDialog.hide();
@@ -283,7 +285,7 @@ public class AddSiteActivity extends AppCompatActivity {
             login_username.setText(result.site.getUsername());
             login_password.setText(result.site.getPassword());
 
-            AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(AddSiteActivity.this);
+            AlertDialog.Builder dlgAlert = new AlertDialog.Builder(AddSiteActivity.this);
 
 
             if (result.exception != null) {

@@ -10,14 +10,13 @@ import android.util.Log;
 import cz.sodae.doornock.R;
 import cz.sodae.doornock.model.site.Site;
 import cz.sodae.doornock.model.site.SiteManager;
-import cz.sodae.doornock.utils.Bytes;
-import cz.sodae.doornock.utils.InvalidGUIDException;
 import cz.sodae.doornock.services.commands.Command;
 import cz.sodae.doornock.services.commands.HelloCommand;
 import cz.sodae.doornock.services.commands.SignCommand;
+import cz.sodae.doornock.utils.Bytes;
+import cz.sodae.doornock.utils.InvalidGUIDException;
 
-public class ApduService extends HostApduService
-{
+public class ApduService extends HostApduService {
 
     private static final String TAG = "Doornock/APDU";
     private static final int NOTIFICATION_ID = 0;
@@ -27,25 +26,25 @@ public class ApduService extends HostApduService
     // https://www.eftlab.com.au/index.php/site-map/knowledge-base/118-apdu-response-list
 
     private static final byte[] A_OKAY = {
-            (byte)0x90,  // SW1	Status byte 1 - Command processing status
-            (byte)0x00   // SW2	Status byte 2 - Command processing qualifier
+            (byte) 0x90,  // SW1	Status byte 1 - Command processing status
+            (byte) 0x00   // SW2	Status byte 2 - Command processing qualifier
     };
 
 
     private static final byte[] A_ERROR_INVALID_AUTH = {
-            (byte)0x98,  // SW1	Status byte 1 - Command processing status
-            (byte)0x04   // SW2	Status byte 2 - Command processing qualifier
+            (byte) 0x98,  // SW1	Status byte 1 - Command processing status
+            (byte) 0x04   // SW2	Status byte 2 - Command processing qualifier
     };
 
     private static final byte[] A_ERROR_INVALID_LC = {
-            (byte)0x67,  // SW1	Status byte 1 - Command processing status
-            (byte)0x00   // SW2	Status byte 2 - Command processing qualifier
+            (byte) 0x67,  // SW1	Status byte 1 - Command processing status
+            (byte) 0x00   // SW2	Status byte 2 - Command processing qualifier
     };
 
 
     private static final byte[] A_ERROR_UNKNOWN_COMMAND = {
-            (byte)0x69,  // SW1	Status byte 1 - Command processing status
-            (byte)0x00   // SW2	Status byte 2 - Command processing qualifier
+            (byte) 0x69,  // SW1	Status byte 1 - Command processing status
+            (byte) 0x00   // SW2	Status byte 2 - Command processing qualifier
     };
 
     @Override
@@ -155,17 +154,16 @@ public class ApduService extends HostApduService
     }
 
 
-    private byte[] ApduSelectByteCommand()
-    {
+    private byte[] ApduSelectByteCommand() {
         byte[] header = {
-            (byte)0x00, // CLA	- Class - Class of instruction
-            (byte)0xA4, // INS	- Instruction - Instruction code
-            (byte)0x04, // P1	- Parameter 1 - Instruction parameter 1
-            (byte)0x00, // P2	- Parameter 2 - Instruction parameter 2
-            (byte)0x07, // Lc field	- Number of bytes present in the data field of the command
+                (byte) 0x00, // CLA	- Class - Class of instruction
+                (byte) 0xA4, // INS	- Instruction - Instruction code
+                (byte) 0x04, // P1	- Parameter 1 - Instruction parameter 1
+                (byte) 0x00, // P2	- Parameter 2 - Instruction parameter 2
+                (byte) 0x07, // Lc field	- Number of bytes present in the data field of the command
         };
         byte[] tail = {
-            (byte)0x00  // Le field	- Maximum number of bytes expected in the data field of the response to the command
+                (byte) 0x00  // Le field	- Maximum number of bytes expected in the data field of the response to the command
         };
         byte[] aid = Bytes.hexToBytes(getApplicationContext().getString(R.string.service_apdu_aid));
 
@@ -173,8 +171,7 @@ public class ApduService extends HostApduService
     }
 
 
-    private void showNotification(String message)
-    {
+    private void showNotification(String message) {
         nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.mipmap.ic_launcher)

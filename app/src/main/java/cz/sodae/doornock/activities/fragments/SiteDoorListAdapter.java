@@ -12,8 +12,7 @@ import java.util.List;
 import cz.sodae.doornock.R;
 import cz.sodae.doornock.model.site.Door;
 
-public class SiteDoorListAdapter extends ArrayAdapter<Door>
-{
+public class SiteDoorListAdapter extends ArrayAdapter<Door> {
     public SiteDoorListAdapter(Context context, List<Door> doors) {
         super(context, R.layout.row_open_door_popup, doors);
     }
@@ -38,8 +37,8 @@ public class SiteDoorListAdapter extends ArrayAdapter<Door>
         viewHolder.name.setText(door.getTitle());
         viewHolder.description.setText(String.format(getContext().getString(
                 door.hasAccess()
-                ? R.string.activity_open_door_popup_list_has_access
-                : R.string.activity_open_door_popup_list_has_not_access
+                        ? R.string.activity_open_door_popup_list_has_access
+                        : R.string.activity_open_door_popup_list_has_not_access
         ), door.getId()));
 
         return convertView;

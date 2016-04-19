@@ -97,7 +97,6 @@ public class OpenDoorPopupActivity extends ListActivity {
     }
 
 
-
     private class SiteDoorListTask extends AsyncTask<Object, Float, Boolean> {
 
         private String guid;
@@ -153,7 +152,6 @@ public class OpenDoorPopupActivity extends ListActivity {
 
         }
     }
-
 
 
     private class OpenDoorTask extends AsyncTask<Object, Float, Boolean> {

@@ -12,23 +12,20 @@ import java.util.List;
 
 import cz.sodae.doornock.model.DatabaseHelper;
 
-public class KeyRing
-{
+public class KeyRing {
     private DatabaseHelper db;
 
     public KeyRing(Context context) {
         this.db = new DatabaseHelper(context);
     }
 
-    public Key getById(Long id)
-    {
+    public Key getById(Long id) {
         List<Key> result = select(DatabaseHelper.COLUMN_KEYS_ID + " = ?", new String[]{id.toString()}, null);
         if (result.size() == 0) return null;
         return result.get(0);
     }
 
-    public boolean remove(Key key)
-    {
+    public boolean remove(Key key) {
         try (SQLiteDatabase connection = db.getWritableDatabase()) {
             if (key.getId() != 0) {
                 connection.delete(DatabaseHelper.TABLE_SITES, DatabaseHelper.COLUMN_KEYS_ID + " = ?", new String[]{key.getId().toString()});
@@ -38,13 +35,11 @@ public class KeyRing
         return false;
     }
 
-    public List<Key> findAll()
-    {
+    public List<Key> findAll() {
         return select(null, null, null);
     }
 
-    private List<Key> select(String selection, String[] selectionArgs, String orderBy)
-    {
+    private List<Key> select(String selection, String[] selectionArgs, String orderBy) {
         List<Key> list = new LinkedList<>();
         try (SQLiteDatabase connection = db.getReadableDatabase()) {
             try (Cursor c = connection.query(DatabaseHelper.TABLE_KEYS, new String[]{
@@ -73,8 +68,7 @@ public class KeyRing
         return list;
     }
 
-    public Key save(Key key)
-    {
+    public Key save(Key key) {
         try (SQLiteDatabase connection = db.getWritableDatabase()) {
 
             ContentValues contentValues = new ContentValues();

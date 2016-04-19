@@ -1,7 +1,6 @@
 package cz.sodae.doornock.model.site;
 
-public class Door
-{
+public class Door {
 
     private String id;
 

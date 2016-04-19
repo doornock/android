@@ -1,7 +1,6 @@
 package cz.sodae.doornock.utils;
 
-public class InvalidGUIDException extends Exception
-{
+public class InvalidGUIDException extends Exception {
     private String invalidGuid;
 
     public InvalidGUIDException(String guid) {

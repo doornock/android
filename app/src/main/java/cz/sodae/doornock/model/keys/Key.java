@@ -13,8 +13,7 @@ import java.security.spec.X509EncodedKeySpec;
 
 import cz.sodae.doornock.utils.SignerAndVerifier;
 
-public class Key
-{
+public class Key {
     static final String ALGORITHM = "RSA";
 
     private Long id;

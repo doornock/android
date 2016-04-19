@@ -1,16 +1,18 @@
 package cz.sodae.doornock.utils;
 
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 
 public class Hmac256 {
 
 
     /**
      * Calculate HMAC-265 by secret and message
-     * @param secret key
+     *
+     * @param secret  key
      * @param message content
      * @return calculated HMAC256 in hex with left zero padding
      * @throws NoSuchAlgorithmException

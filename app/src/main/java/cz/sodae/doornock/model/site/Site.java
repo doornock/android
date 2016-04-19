@@ -4,8 +4,7 @@ import cz.sodae.doornock.model.keys.Key;
 import cz.sodae.doornock.utils.GuidPattern;
 import cz.sodae.doornock.utils.InvalidGUIDException;
 
-public class Site
-{
+public class Site {
     private Long id;
     private String guid;
 
@@ -61,8 +60,7 @@ public class Site
         return deviceId;
     }
 
-    public boolean isDeviceRegistred()
-    {
+    public boolean isDeviceRegistred() {
         return apiKey != null;
     }
 

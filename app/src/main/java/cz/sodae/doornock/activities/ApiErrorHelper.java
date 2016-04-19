@@ -9,8 +9,7 @@ import cz.sodae.doornock.model.site.SiteApi;
 import cz.sodae.doornock.utils.ApiSender;
 import cz.sodae.doornock.utils.InvalidGUIDException;
 
-class ApiErrorHelper
-{
+class ApiErrorHelper {
     private Context context;
 
     public ApiErrorHelper(Context context) {

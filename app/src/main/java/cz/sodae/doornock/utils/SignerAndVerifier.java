@@ -1,9 +1,13 @@
 package cz.sodae.doornock.utils;
 
-import java.security.*;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.Signature;
+import java.security.SignatureException;
 
-public class SignerAndVerifier
-{
+public class SignerAndVerifier {
     static final String ALGORITHM = "SHA256withRSA";
 
     public static byte[] sign(byte[] data, PrivateKey key)

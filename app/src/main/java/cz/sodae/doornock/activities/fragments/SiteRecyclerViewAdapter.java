@@ -6,12 +6,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.List;
 
 import cz.sodae.doornock.R;
 import cz.sodae.doornock.model.site.Site;
 import cz.sodae.doornock.model.site.SiteManager;
-
-import java.util.List;
 
 public class SiteRecyclerViewAdapter extends RecyclerView.Adapter<SiteRecyclerViewAdapter.ViewHolder> {
 
@@ -28,8 +27,7 @@ public class SiteRecyclerViewAdapter extends RecyclerView.Adapter<SiteRecyclerVi
     }
 
 
-    public void refresh()
-    {
+    public void refresh() {
         sites = siteManager.findAll();
         notifyDataSetChanged();
     }
@@ -76,8 +74,7 @@ public class SiteRecyclerViewAdapter extends RecyclerView.Adapter<SiteRecyclerVi
             mContentView = (TextView) view.findViewById(R.id.content);
         }
 
-        public void setSite(Site site)
-        {
+        public void setSite(Site site) {
             mItem = site;
             mIdView.setText(site.getTitle() != null ? site.getTitle() : "(Neznámá)");
             mContentView.setText("Adresa sítě: " + site.getUrl());

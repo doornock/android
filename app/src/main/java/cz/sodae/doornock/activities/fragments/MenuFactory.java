@@ -1,7 +1,6 @@
 package cz.sodae.doornock.activities.fragments;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -10,7 +9,6 @@ import android.view.View;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
-import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
@@ -19,15 +17,13 @@ import cz.sodae.doornock.activities.AddSiteActivity;
 import cz.sodae.doornock.activities.KeyRingActivity;
 import cz.sodae.doornock.activities.MainActivity;
 
-public class MenuFactory
-{
+public class MenuFactory {
     final static int MENU_ID_MAIN_ACTIVITY = 1;
     final static int MENU_ID_KEY_RING_ACTIVITY = 2;
     final static int MENU_ID_ADD_SITE_ACTIVITY = 3;
 
 
-    private static IDrawerItem createMainDrawer(Activity context)
-    {
+    private static IDrawerItem createMainDrawer(Activity context) {
         SecondaryDrawerItem drawerItem = new SecondaryDrawerItem()
                 .withName(R.string.menu_activity_list_site)
                 .withIcon(R.mipmap.ic_launcher)
@@ -51,8 +47,7 @@ public class MenuFactory
     }
 */
 
-    private static IDrawerItem createAddSiteDrawer(Activity context)
-    {
+    private static IDrawerItem createAddSiteDrawer(Activity context) {
         SecondaryDrawerItem drawerItem = new SecondaryDrawerItem().withName(R.string.menu_activity_add_site)
                 .withIcon(GoogleMaterial.Icon.gmd_vpn_key)
                 .withIdentifier(MENU_ID_ADD_SITE_ACTIVITY);
@@ -63,9 +58,7 @@ public class MenuFactory
     }
 
 
-
-    public static Drawer create(final Activity context, Toolbar toolbar, Bundle savedInstanceState)
-    {
+    public static Drawer create(final Activity context, Toolbar toolbar, Bundle savedInstanceState) {
         return new DrawerBuilder()
                 .withActivity(context)
                 .withToolbar(toolbar)

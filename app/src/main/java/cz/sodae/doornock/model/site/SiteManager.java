@@ -5,23 +5,16 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
 import cz.sodae.doornock.model.DatabaseHelper;
-import cz.sodae.doornock.model.keys.Key;
 import cz.sodae.doornock.model.keys.KeyRing;
-import cz.sodae.doornock.utils.ApiSender;
 import cz.sodae.doornock.utils.GuidPattern;
 import cz.sodae.doornock.utils.InvalidGUIDException;
 
 
-public class SiteManager
-{
+public class SiteManager {
 
     private DatabaseHelper db;
 
@@ -33,8 +26,7 @@ public class SiteManager
     }
 
 
-    public boolean remove(Site site)
-    {
+    public boolean remove(Site site) {
         if (site.getKey() != null) {
             keyRing.remove(site.getKey());
         }
@@ -48,14 +40,12 @@ public class SiteManager
     }
 
 
-    public List<Site> findAll()
-    {
+    public List<Site> findAll() {
         return select(null, null, null);
     }
 
 
-    public Site getByGuid(String guid) throws InvalidGUIDException
-    {
+    public Site getByGuid(String guid) throws InvalidGUIDException {
         GuidPattern.validOrThrow(guid);
         guid = guid.toUpperCase();
         List<Site> result = select(DatabaseHelper.COLUMN_SITES_GUID + " = ?", new String[]{guid}, null);
@@ -111,8 +101,7 @@ public class SiteManager
         return list;
     }
 
-    public Site save(Site site)
-    {
+    public Site save(Site site) {
         try (SQLiteDatabase connection = db.getWritableDatabase()) {
 
             if (site.getKey() != null && site.getKey().getId() == null) {

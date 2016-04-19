@@ -34,11 +34,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // Database creation sql statement
     private static final String DATABASE_CREATE_KEYS =
             "create table " + TABLE_KEYS + "("
-                + COLUMN_KEYS_ID + " integer primary key autoincrement, "
-                + COLUMN_KEYS_TITLE + " varchar(255) not null, "
-                + COLUMN_KEYS_KEY_PRIVATE + " BLOB not null, "
-                + COLUMN_KEYS_KEY_PUBLIC + " BLOB not null "
-            + ");";
+                    + COLUMN_KEYS_ID + " integer primary key autoincrement, "
+                    + COLUMN_KEYS_TITLE + " varchar(255) not null, "
+                    + COLUMN_KEYS_KEY_PRIVATE + " BLOB not null, "
+                    + COLUMN_KEYS_KEY_PUBLIC + " BLOB not null "
+                    + ");";
 
     // Database creation sql statement
     private static final String DATABASE_CREATE_SITES =
@@ -74,7 +74,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Log.w(
                 DatabaseHelper.class.getName(),
                 "Upgrading database from version " + oldVersion + " to "
-                + newVersion + ", which will destroy all old data"
+                        + newVersion + ", which will destroy all old data"
         );
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_KEYS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_SITES);

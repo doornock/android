@@ -56,8 +56,7 @@ public class SiteDetailActivity extends AppCompatActivity {
     }
 
 
-    private void reload(String guid)
-    {
+    private void reload(String guid) {
         try {
             site = siteManager.getByGuid(guid);
             if (site == null) {
@@ -83,19 +82,17 @@ public class SiteDetailActivity extends AppCompatActivity {
 
 
     private void setText(int id, String value) {
-        ((TextView)findViewById(id)).setText(value == null ? "-" : value);
+        ((TextView) findViewById(id)).setText(value == null ? "-" : value);
     }
 
 
     @OnClick(R.id.btn_remove)
-    public void onClickDelete(View view)
-    {
+    public void onClickDelete(View view) {
         new AlertDialog.Builder(this)
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .setTitle(R.string.activity_detail_site_remove_site)
                 .setMessage(site.getTitle())
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener()
-                {
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         siteManager.remove(site);

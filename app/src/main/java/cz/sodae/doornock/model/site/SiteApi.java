@@ -42,7 +42,7 @@ public class SiteApi {
     public void register(Site site)
             throws ApiSender.ApiException,
             RegistrationUnsupportedException,
-            TechnicalProblemException  {
+            TechnicalProblemException {
         try {
 
             JSONObject json = apiSender.get(rtrimSlash(site.getUrl()) + "/api/v1/user/register-random");

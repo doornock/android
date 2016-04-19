@@ -4,8 +4,11 @@ import java.util.Arrays;
 
 import cz.sodae.doornock.utils.Bytes;
 
-public class Command
-{
+/**
+ * Class which can parse or build APDU (extended)
+ * http://www.cardwerk.com/smartcards/smartcard_standard_ISO7816-4_5_basic_organizations.aspx#table8
+ */
+public class Command {
 
     protected byte defClass;
 
@@ -75,7 +78,7 @@ public class Command
     }
 
     public Command(byte defClass, byte defInstruction, byte defParameter, byte defParameterSecond, int defMaximumLengthResponse, byte[] defData)
-        throws ApduInvalidLengthException {
+            throws ApduInvalidLengthException {
         this.defClass = defClass;
         this.defInstruction = defInstruction;
         this.defParameter = defParameter;
@@ -114,14 +117,12 @@ public class Command
         return defParameterSecond;
     }
 
-    public byte[] getData()
-    {
+    public byte[] getData() {
         return defData;
     }
 
 
-    public byte[] composeApdu() throws ApduInvalidLengthException
-    {
+    public byte[] composeApdu() throws ApduInvalidLengthException {
         if (defMaximumLengthResponse > 256) {
             throw new ApduInvalidLengthException("Classic APDU has maximum size of response 256");
         }
@@ -138,14 +139,13 @@ public class Command
 
         return Bytes.concatenate(
                 header,
-                new byte[] {(byte) (0xFF & (defData.length))},
+                new byte[]{(byte) (0xFF & (defData.length))},
                 defData,
-                new byte[] {(byte) (0xFF & (defMaximumLengthResponse == 256 ? 0 : defMaximumLengthResponse))}
+                new byte[]{(byte) (0xFF & (defMaximumLengthResponse == 256 ? 0 : defMaximumLengthResponse))}
         );
     }
 
-    public byte[] composeApduExtended() throws ApduInvalidLengthException
-    {
+    public byte[] composeApduExtended() throws ApduInvalidLengthException {
         byte[] header = {
                 defClass,
                 defInstruction,
@@ -160,7 +160,7 @@ public class Command
         int dataSize = getData().length;
 
         if (dataSize > 0) {
-            Lc = Bytes.concatenate(new byte[] {0x00}, intToTwoByte(dataSize), defData);
+            Lc = Bytes.concatenate(new byte[]{0x00}, intToTwoByte(dataSize), defData);
         } else {
             Lc = new byte[0];
         }
@@ -171,7 +171,7 @@ public class Command
         } else if (dataSize > 0) {
             Le = LePart;
         } else {
-            Le = Bytes.concatenate(new byte[] {0x00}, LePart);
+            Le = Bytes.concatenate(new byte[]{0x00}, LePart);
         }
 
         return Bytes.concatenate(header, Lc, Le);
@@ -182,21 +182,19 @@ public class Command
     }
 
 
-    private byte[] intToTwoByte(int number)
-    {
+    private byte[] intToTwoByte(int number) {
         if (number < 0) {
             return new byte[0];
         }
 
-        return new byte[] {
+        return new byte[]{
                 (byte) ((number >> 8) & 0xFF),
                 (byte) (number & 0xFF)
         };
     }
 
 
-    public class ApduInvalidLengthException extends Exception
-    {
+    public class ApduInvalidLengthException extends Exception {
         public ApduInvalidLengthException(String detailMessage) {
             super(detailMessage);
         }
