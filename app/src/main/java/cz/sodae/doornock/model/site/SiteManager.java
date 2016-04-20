@@ -30,7 +30,7 @@ public class SiteManager {
      * Remove site and their key
      *
      * @param site
-     * @return
+     * @return is really removed from database. If site is not saved, it cannot be deleted
      */
     public boolean remove(Site site) {
         if (site.getKey() != null) {
@@ -38,8 +38,11 @@ public class SiteManager {
         }
         try (SQLiteDatabase connection = db.getWritableDatabase()) {
             if (site.getId() != 0) {
-                connection.delete(DatabaseHelper.TABLE_SITES, DatabaseHelper.COLUMN_KEYS_ID + " = ?", new String[]{site.getId().toString()});
-                return true;
+                return connection.delete(
+                        DatabaseHelper.TABLE_SITES,
+                        DatabaseHelper.COLUMN_KEYS_ID + " = ?",
+                        new String[]{site.getId().toString()}
+                ) > 0;
             }
         }
         return false;

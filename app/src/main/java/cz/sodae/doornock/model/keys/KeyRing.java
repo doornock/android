@@ -35,13 +35,16 @@ public class KeyRing {
      * Remove key from db
      *
      * @param key
-     * @return is found and removed
+     * @return is really removed from database. If key is not saved, it cannot be deleted
      */
     public boolean remove(Key key) {
         try (SQLiteDatabase connection = db.getWritableDatabase()) {
             if (key.getId() != 0) {
-                connection.delete(DatabaseHelper.TABLE_SITES, DatabaseHelper.COLUMN_KEYS_ID + " = ?", new String[]{key.getId().toString()});
-                return true;
+                return connection.delete(
+                        DatabaseHelper.TABLE_SITES,
+                        DatabaseHelper.COLUMN_KEYS_ID + " = ?",
+                        new String[]{key.getId().toString()}
+                ) > 0;
             }
         }
         return false;
