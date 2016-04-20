@@ -44,7 +44,7 @@ public class Command {
 
         if (apdu.length == 4 + 1) { // when there is only Le
             LePosition = 4;
-        } else if (apdu[4] == 0x00) { // extended APDU, Lc/Le is/are 3 bytes
+        } else if (apdu[4] == (byte) 0x00) { // extended APDU, Lc/Le is/are 3 bytes
             if (apdu.length == 4 + 3) { // when only Le
                 LePosition = 5;
             } else { // always when Lc = 3 bytes
@@ -56,7 +56,7 @@ public class Command {
             }
         } else { // when Lc is 1 byte
             dataPosition = 5;
-            dataSize = apdu[4];
+            dataSize = apdu[4] & 0xFF;
             LePosition = dataPosition + dataSize;
         }
 
@@ -66,7 +66,7 @@ public class Command {
                 max = twoByteToInt(apdu[LePosition], apdu[LePosition + 1]);
                 this.defMaximumLengthResponse = max == 0 ? 65536 : max;
             } else if (apdu.length == LePosition + 1 + 1) {
-                max = apdu[LePosition];
+                max = apdu[LePosition] & 0xFF;
                 this.defMaximumLengthResponse = max == 0 ? 256 : max;
             }
         }
