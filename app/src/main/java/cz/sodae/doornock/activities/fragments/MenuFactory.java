@@ -14,12 +14,10 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
 import cz.sodae.doornock.R;
 import cz.sodae.doornock.activities.AddSiteActivity;
-import cz.sodae.doornock.activities.KeyRingActivity;
 import cz.sodae.doornock.activities.MainActivity;
 
 public class MenuFactory {
     final static int MENU_ID_MAIN_ACTIVITY = 1;
-    final static int MENU_ID_KEY_RING_ACTIVITY = 2;
     final static int MENU_ID_ADD_SITE_ACTIVITY = 3;
 
 
@@ -33,19 +31,6 @@ public class MenuFactory {
         }
         return drawerItem;
     }
-
-/*
-    private static IDrawerItem createKeyRingDrawer(Activity context)
-    {
-        SecondaryDrawerItem drawerItem = new SecondaryDrawerItem().withName(R.string.menu_activity_key_ring)
-                .withIcon(GoogleMaterial.Icon.gmd_vpn_key)
-                .withIdentifier(MENU_ID_KEY_RING_ACTIVITY);
-        if (context instanceof KeyRingActivity) {
-            drawerItem.withSetSelected(true);
-        }
-        return drawerItem;
-    }
-*/
 
     private static IDrawerItem createAddSiteDrawer(Activity context) {
         SecondaryDrawerItem drawerItem = new SecondaryDrawerItem().withName(R.string.menu_activity_add_site)
@@ -66,7 +51,6 @@ public class MenuFactory {
                 .withHeaderDivider(false)
                 .addDrawerItems(
                         createMainDrawer(context),
-                        //createKeyRingDrawer(context),
                         createAddSiteDrawer(context)
                 ) // add the items we want to use with our Drawer
                 /*
@@ -80,15 +64,7 @@ public class MenuFactory {
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                        if (drawerItem.getIdentifier() == MENU_ID_KEY_RING_ACTIVITY) {
-                            if (context instanceof KeyRingActivity) return false;
-                            Intent i = new Intent(context, KeyRingActivity.class);
-                            i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                            context.finish();
-                            context.overridePendingTransition(0, 0);
-                            context.startActivity(i);
-                            return true;
-                        } else if (drawerItem.getIdentifier() == MENU_ID_MAIN_ACTIVITY) {
+                        if (drawerItem.getIdentifier() == MENU_ID_MAIN_ACTIVITY) {
                             if (context instanceof MainActivity) return false;
                             Intent i = new Intent(context, MainActivity.class);
                             i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);

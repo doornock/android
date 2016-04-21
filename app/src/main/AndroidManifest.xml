@@ -38,10 +38,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".activities.KeyRingActivity"
-            android:label="@string/activity_key_ring_title"
-            android:theme="@style/AppTheme" />
         <activity android:name=".activities.AddSiteActivity" />
         <activity
             android:name=".activities.SiteDetailActivity"
