@@ -78,6 +78,22 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingLeft="@dimen/property_margin"
+                android:paddingRight="@dimen/property_margin"
+                android:paddingTop="@dimen/property_margin">
+
+                <Switch
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/activity_detail_site_require_unlock"
+                    android:id="@+id/switch_require_unlock" />
+
+            </LinearLayout>
+
             <TextView
                 android:layout_marginTop="20dp"
                 android:layout_width="wrap_content"

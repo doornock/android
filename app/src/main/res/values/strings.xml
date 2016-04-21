@@ -26,6 +26,7 @@
     <string name="activity_detail_site_private_keys">Klíčenka</string>
     <string name="activity_detail_site_private_key">Klíč</string>
     <string name="activity_detail_site_private_key_regenerating">Vygenerovat nový klíč</string>
+    <string name="activity_detail_site_require_unlock">Vyžadováno odemknuté zařízení</string>
 
 
     <string name="activity_add_site_title">Přidat síť</string>
@@ -66,5 +67,12 @@
 
     <string name="activity_open_door_popup_list_has_access">%1$s - Máte přístup</string>
     <string name="activity_open_door_popup_list_has_not_access">%1$s - Nemáte přístup</string>
+
+
+    <string name="service_apdu_notification_node_detected">Terminál detekován</string>
+    <string name="service_apdu_notification_site_not_found">Sít nenalezena</string>
+    <string name="service_apdu_notification_site_found">Síť nalezena: %1$s</string>
+    <string name="service_apdu_notification_site_authentication">Probíhá ověření - %1$s</string>
+    <string name="service_apdu_notification_unlock_required">Zařízení musí být odemčeno</string>
 
 </resources>

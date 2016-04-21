@@ -5,19 +5,35 @@ import cz.sodae.doornock.utils.GuidPattern;
 import cz.sodae.doornock.utils.InvalidGUIDException;
 
 public class Site {
+
+    /** Internal id */
     private Long id;
+
+    /** Doornock GUID */
     private String guid;
 
+    /** API URL */
     private String url;
+
+    /** Title of Doornock site */
     private String title;
 
+    /** Username to log in */
     private String username;
+
+    /** Password to log in */
     private String password;
 
+    /** Id of registered device */
     private String deviceId;
+
+    /** Secret api key of registered device */
     private String apiKey;
 
+    /** Key to use NFC authentication */
     private Key key;
+
+    private boolean requireUnlock;
 
     public Site(String url) {
         this.url = url;
@@ -64,6 +80,9 @@ public class Site {
         return apiKey != null;
     }
 
+    public boolean isRequiredUnlock() {
+        return requireUnlock;
+    }
 
     public Site setId(Long id) {
         this.id = id;
@@ -101,5 +120,8 @@ public class Site {
         return this;
     }
 
-
+    public Site setRequiredUnlock(boolean requireUnlock) {
+        this.requireUnlock = requireUnlock;
+        return this;
+    }
 }

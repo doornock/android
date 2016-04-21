@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,6 +18,7 @@ import java.text.DateFormat;
 import java.util.Date;
 
 import butterknife.ButterKnife;
+import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import cz.sodae.doornock.R;
 import cz.sodae.doornock.model.keys.Key;
@@ -78,6 +80,7 @@ public class SiteDetailActivity extends AppCompatActivity {
         setText(R.id.device_id, site.getDeviceId());
         setText(R.id.device_api_key, site.getApiKey());
         setText(R.id.device_key, site.getKey() != null ? site.getKey().getTitle() : null);
+        ((Switch) findViewById(R.id.switch_require_unlock)).setChecked(site.isRequiredUnlock());
     }
 
 
@@ -118,6 +121,12 @@ public class SiteDetailActivity extends AppCompatActivity {
         Intent i = new Intent(this, OpenDoorPopupActivity.class);
         i.putExtra("guid", this.site.getGuid());
         startActivityForResult(i, 0);
+    }
+
+    @OnCheckedChanged(R.id.switch_require_unlock)
+    public void onChangeSwitch(boolean checked) {
+        site.setRequiredUnlock(checked);
+        this.siteManager.save(site);
     }
 
 

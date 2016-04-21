@@ -23,13 +23,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_SITES_API_URL = "api_url";
     public static final String COLUMN_SITES_API_KEY = "api_key";
     public static final String COLUMN_SITES_KEY = "key_id";
+    public static final String COLUMN_SITES_REQUIRE_UNLOCK = "require_unlock";
 
     private static final String DATABASE_NAME = "db.db";
 
     /**
      * Create a migration {@link #onUpgrade} when you create new version instead of destroy DB
      */
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
 
     // Database creation sql statement
     private static final String DATABASE_CREATE_KEYS =
@@ -51,7 +52,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     + COLUMN_SITES_API_URL + " text not null, "
                     + COLUMN_SITES_API_KEY + " varchar(255) null, "
                     + COLUMN_SITES_DEVICE_ID + " varchar(255) null, "
-                    + COLUMN_SITES_KEY + " int null"
+                    + COLUMN_SITES_KEY + " int null,"
+                    + COLUMN_SITES_REQUIRE_UNLOCK  + " int DEFAULT 0"
                     + ");";
 
     private static final String DATABASE_CREATE_INDEX_SITES =
@@ -71,14 +73,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        Log.w(
-                DatabaseHelper.class.getName(),
-                "Upgrading database from version " + oldVersion + " to "
-                        + newVersion + ", which will destroy all old data"
-        );
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_KEYS);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_SITES);
-        onCreate(db);
+
+        if (oldVersion == 4 && newVersion == 5) {
+            db.execSQL("ALTER TABLE " + TABLE_SITES + " ADD COLUMN " + COLUMN_SITES_REQUIRE_UNLOCK + " int DEFAULT 0");
+        } else {
+
+            Log.w(
+                    DatabaseHelper.class.getName(),
+                    "Upgrading database from version " + oldVersion + " to "
+                            + newVersion + ", which will destroy all old data"
+            );
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_KEYS);
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_SITES);
+            onCreate(db);
+        }
     }
 
 }

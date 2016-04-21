@@ -82,7 +82,8 @@ public class SiteManager {
                     DatabaseHelper.COLUMN_SITES_USERNAME,
                     DatabaseHelper.COLUMN_SITES_PASSWORD,
                     DatabaseHelper.COLUMN_SITES_DEVICE_ID,
-                    DatabaseHelper.COLUMN_SITES_GUID
+                    DatabaseHelper.COLUMN_SITES_GUID,
+                    DatabaseHelper.COLUMN_SITES_REQUIRE_UNLOCK,
             }, selection, selectionArgs, null, null, orderBy)) {
                 c.moveToFirst();
                 while (!c.isAfterLast()) {
@@ -109,6 +110,8 @@ public class SiteManager {
                         } catch (InvalidGUIDException e) {
                             e.printStackTrace();
                         }
+
+                    site.setRequiredUnlock(c.getInt(9) == 1);
 
                     list.add(site);
                     c.moveToNext();
@@ -137,6 +140,7 @@ public class SiteManager {
             contentValues.put(DatabaseHelper.COLUMN_SITES_KEY, site.getKey() != null ? site.getKey().getId() : null);
             contentValues.put(DatabaseHelper.COLUMN_SITES_USERNAME, site.getUsername());
             contentValues.put(DatabaseHelper.COLUMN_SITES_PASSWORD, site.getPassword());
+            contentValues.put(DatabaseHelper.COLUMN_SITES_REQUIRE_UNLOCK, site.isRequiredUnlock());
 
             if (site.getId() != null) {
                 connection.update(DatabaseHelper.TABLE_SITES, contentValues, DatabaseHelper.COLUMN_SITES_ID + " = ?", new String[]{site.getId().toString()});
