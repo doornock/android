@@ -53,7 +53,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     + COLUMN_SITES_API_KEY + " varchar(255) null, "
                     + COLUMN_SITES_DEVICE_ID + " varchar(255) null, "
                     + COLUMN_SITES_KEY + " int null,"
-                    + COLUMN_SITES_REQUIRE_UNLOCK  + " int DEFAULT 0"
+                    + COLUMN_SITES_REQUIRE_UNLOCK + " int DEFAULT 0"
                     + ");";
 
     private static final String DATABASE_CREATE_INDEX_SITES =

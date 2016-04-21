@@ -24,30 +24,44 @@ public class ApduService extends HostApduService {
 
     private static final String TAG = "Doornock/APDU";
     private static final int NOTIFICATION_ID = 0;
+
+    /** After {@link #onDeactivated(int)} notification will be hidden */
     private boolean hideNotification = true;
 
-    // Common commands variable - have to be released on {@link #onDeactivated()}
+    /** Common commands variable - have to be released on {@link #onDeactivated(int)} */
     Site site;
 
     // https://www.eftlab.com.au/index.php/site-map/knowledge-base/118-apdu-response-list
 
+    /**
+     * Successful status code
+     */
     private static final byte[] A_OKAY = {
             (byte) 0x90,  // SW1	Status byte 1 - Command processing status
             (byte) 0x00   // SW2	Status byte 2 - Command processing qualifier
     };
 
-
+    /**
+     * Error in process status code
+     */
     private static final byte[] A_ERROR_INVALID_AUTH = {
             (byte) 0x98,  // SW1	Status byte 1 - Command processing status
             (byte) 0x04   // SW2	Status byte 2 - Command processing qualifier
     };
 
+
+    /**
+     * Status code when APDU is invalid
+     */
     private static final byte[] A_ERROR_INVALID_LC = {
             (byte) 0x67,  // SW1	Status byte 1 - Command processing status
             (byte) 0x00   // SW2	Status byte 2 - Command processing qualifier
     };
 
 
+    /**
+     * Status code when APDU command is unknown
+     */
     private static final byte[] A_ERROR_UNKNOWN_COMMAND = {
             (byte) 0x69,  // SW1	Status byte 1 - Command processing status
             (byte) 0x00   // SW2	Status byte 2 - Command processing qualifier
@@ -172,6 +186,7 @@ public class ApduService extends HostApduService {
 
     /**
      * Checks if device is unlocked by site if it required
+     *
      * @param site
      * @return if site does not require unlocked device, or device is already unlocked, return true
      */
@@ -189,6 +204,7 @@ public class ApduService extends HostApduService {
 
     /**
      * When app need attention from user
+     *
      * @param message message to show
      */
     private void interruptUserNotification(String message) {
@@ -202,6 +218,7 @@ public class ApduService extends HostApduService {
 
     /**
      * Notification which will be removed
+     *
      * @param message message to show
      */
     private void quickNotification(String message) {
@@ -211,8 +228,9 @@ public class ApduService extends HostApduService {
 
     /**
      * Show notification
-     * @param id se
-     * @param message
+     *
+     * @param id id in NotificationManager
+     * @param message message to show
      */
     private void showNotification(int id, String message) {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
